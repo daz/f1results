@@ -5,6 +5,7 @@ Gem::Specification.new do |s|
   s.email         = 'dazonic@me.com'
   s.description   = 'Get F1 results from formula1.com'
   s.summary       = 'F1 Results'
+  s.homepage      = 'https://github.com/daz/f1results'
 
   s.files         = Dir['bin/f1results', 'lib/**/*', 'test/*', 'Rakefile', 'README.md', 'LICENSE']
   s.executables   = ['f1results']
