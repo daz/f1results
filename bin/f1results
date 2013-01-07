@@ -1,0 +1,53 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'optparse'
+require 'terminal-table'
+require 'f1results'
+
+options = {}
+
+optparse = OptionParser.new do |opts|
+  options[:type] = :race
+  opts.on('-q', '--qualifying', 'Qualifying') do
+    options[:type] = :qualifying
+  end
+end
+
+optparse.parse!
+
+season = ARGV[0] || Time.now.year
+country = if country = ARGV[1]
+  country.to_i == 0 ? country : country.to_i
+else
+  :latest
+end
+
+begin
+  event = F1Results.get(season, country, options[:type])
+rescue Exception => e
+  puts e
+  exit
+end
+
+title = [event.country, event.type.to_s.capitalize, event.grand_prix].join(' ')
+table = Terminal::Table.new :title => title, :rows => event.to_a
+
+if event.qualifying?
+  cols = %W(Pos Num Driver Team Q1 Q2 Q3 Laps)
+  table.align_column 0, :right
+  table.align_column 1, :right
+  table.align_column 7, :right
+
+elsif event.race?
+  cols = %W(Pos Num Driver Team Laps Time/Retired Grid Points)
+  table.align_column 0, :right
+  table.align_column 1, :right
+  table.align_column 4, :right
+  table.align_column 5, :right
+  table.align_column 6, :right
+  table.align_column 7, :right
+end
+
+table.headings = cols
+puts table
