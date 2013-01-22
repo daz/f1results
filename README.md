@@ -2,6 +2,8 @@
 
 Get F1 results from formula1.com
 
+![F1Results](http://daz.github.com/f1results/screenshot.png)
+
 ## Installation
 
 Add this line to your application's Gemfile:
