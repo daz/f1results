@@ -32,10 +32,12 @@ module F1Results
     private
 
     def build(row)
+      row.map! { |x| x.strip == '' ? nil : x }
       self.position = row[0]
       @driver_number = row[1].to_i
       @driver = row[2]
       @team = row[3]
+      row
     end
   end
 
@@ -49,13 +51,13 @@ module F1Results
     private
 
     def build(row)
+      row = super
       @q1 = row[4]
       if row.length > 5
         @q2 = row[5]
         @q3 = row[6]
         @laps = row[7].to_i
       end
-      super
     end
   end
 
@@ -69,11 +71,11 @@ module F1Results
     private
 
     def build(row)
+      row = super
       @laps = row[4].to_i
       self.time_or_retired = row[5]
       @grid = row[6].to_i
       @points = row[7].to_i
-      super
     end
   end
 end

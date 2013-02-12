@@ -46,6 +46,14 @@ class ResultTest < MiniTest::Unit::TestCase
     assert_equal 25, result.laps
   end
 
+  def test_parse_qualifying_with_blank_values
+    result = F1Results::QualifyingResult.new(['1', '5', 'Fernando Alonso', 'Ferrari', '1:46.515', '', '', ''])
+    assert_equal '1:46.515', result.q1
+    assert_equal nil, result.q2
+    assert_equal nil, result.q3
+    assert_equal 0, result.laps
+  end
+
   def test_race_to_a
     result = F1Results::RaceResult.new(['5', '9', 'Kimi Räikkönen', 'Lotus-Renault', '52', '+10.3 secs', '6', '10'])
     assert_equal [5, 9, 'Kimi Räikkönen', 'Lotus-Renault', 52, '+10.3 secs', 6, 10], result.to_a
