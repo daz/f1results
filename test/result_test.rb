@@ -22,6 +22,14 @@ class ResultTest < MiniTest::Unit::TestCase
     assert_equal 'Gear box', result.retired
   end
 
+  def test_qualifying_time
+    result = F1Results::QualifyingResult.new
+    result.q1 = '1:46.000'
+    result.q2 = '1:46.515'
+    result.q3 = nil
+    assert_equal '1:46.515', result.time
+  end
+
   def test_parse_race
     result = F1Results::RaceResult.new(['5', '9', 'Kimi Räikkönen', 'Lotus-Renault', '52', '+10.3 secs', '6', '10'])
     assert_equal 5, result.position

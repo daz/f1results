@@ -1,6 +1,6 @@
 module F1Results
   class Result
-    attr_accessor :index, :position, :driver, :driver_number, :team, :time, :retired, :laps
+    attr_accessor :index, :position, :driver, :driver_number, :team, :laps
 
     def initialize(row = nil)
       build(row) unless row.nil?
@@ -15,18 +15,6 @@ module F1Results
       else
         n.to_i
       end
-    end
-
-    def time_or_retired=(str)
-      if /^[0-9]|\+/ =~ str
-        @time = str
-      else
-        @retired = str
-      end
-    end
-
-    def time_or_retired
-      time || retired
     end
 
     private
@@ -48,6 +36,10 @@ module F1Results
       [position, driver_number, driver, team, q1, q2, q3, laps]
     end
 
+    def time
+      q3 || q2 || q1
+    end
+
     private
 
     def build(row)
@@ -62,10 +54,22 @@ module F1Results
   end
 
   class RaceResult < Result
-    attr_accessor :grid, :points
+    attr_accessor :time_or_retired, :time, :retired, :grid, :points
 
     def to_a
       [position, driver_number, driver, team, laps, time_or_retired, grid, points]
+    end
+
+    def time_or_retired=(str)
+      if /^[0-9]|\+/ =~ str
+        @time = str
+      else
+        @retired = str
+      end
+    end
+
+    def time_or_retired
+      time || retired
     end
 
     private
