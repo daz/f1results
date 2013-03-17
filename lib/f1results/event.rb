@@ -32,7 +32,7 @@ module F1Results
     end
 
     def parse_results_table(table)
-      data = table.xpath('//tr')[1..-1].map do |row|
+      data = table.xpath('//tr[not(position()=1)]').map do |row|
         row.xpath('./td').map do |col|
           col.text.strip
         end

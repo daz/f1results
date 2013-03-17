@@ -62,6 +62,12 @@ class ResultTest < MiniTest::Unit::TestCase
     assert_equal 0, result.laps
   end
 
+  def test_parse_with_extra_whitespace
+    result = F1Results::RaceResult.new(['14', '17', 'Valtteri  Bottas', "   \n\nWilliams-Renault    ", '57', '+1 Lap', '16', ''])
+    assert_equal 'Valtteri Bottas', result.driver
+    assert_equal 'Williams-Renault', result.team
+  end
+
   def test_race_to_a
     result = F1Results::RaceResult.new(['5', '9', 'Kimi Räikkönen', 'Lotus-Renault', '52', '+10.3 secs', '6', '10'])
     assert_equal [5, 9, 'Kimi Räikkönen', 'Lotus-Renault', 52, '+10.3 secs', 6, 10], result.to_a

@@ -20,7 +20,10 @@ module F1Results
     private
 
     def build(row)
-      row.map! { |x| x.strip == '' ? nil : x }
+      row.map! do |col|
+        col = col.strip.gsub(/\s+/, ' ')
+        col == '' ? nil : col
+      end
       self.position = row[0]
       @driver_number = row[1].to_i
       @driver = row[2]
