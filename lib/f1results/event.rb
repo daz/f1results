@@ -44,6 +44,8 @@ module F1Results
         result.index = i + 1
         @results << result unless result.position.nil?
       end
+
+      self
     end
   end
 end

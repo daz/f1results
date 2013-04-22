@@ -46,7 +46,6 @@ module F1Results
       table = page.parser.xpath('//table[contains(@class, "raceResults")]')
 
       event.parse_results_table(table)
-      event
     end
   end
 end
