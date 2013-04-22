@@ -35,14 +35,15 @@ module F1Results
       click(season_country_link)
       event.grand_prix = page.parser.at_xpath('//h2').text
 
-      if event.qualifying?
-        grand_prix_link = page.link_with(:text => 'QUALIFYING') || page.link_with(:text => 'SUNDAY QUALIFYING')
-        raise "No qualifying results for: #{season} #{country}" if grand_prix_link.nil?
-        click(grand_prix_link)
+      results_link = if event.qualifying?
+        page.link_with(:text => 'QUALIFYING') || page.link_with(:text => 'SUNDAY QUALIFYING')
+      elsif event.race?
+        page.link_with(:text => 'RACE', :dom_class => 'L3Selected')
       end
 
+      raise "No #{event.type} results for: #{season} #{country}" if results_link.nil?
+      click(results_link) if event.qualifying?
       table = page.parser.xpath('//table[contains(@class, "raceResults")]')
-      raise "No results for: #{season} #{country}" if table.empty?
 
       event.parse_results_table(table)
       event
