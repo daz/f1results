@@ -49,15 +49,15 @@ module F1Results
       row = super
       @q1 = row[4]
       if row.length > 5
-        @q2 = row[5]
-        @q3 = row[6]
+        @q2   = row[5]
+        @q3   = row[6]
         @laps = row[7].to_i
       end
     end
   end
 
   class RaceResult < Result
-    attr_accessor :time_or_retired, :time, :retired, :grid, :points
+    attr_accessor :time, :retired, :grid, :points
 
     def to_a
       [position, driver_number, driver, team, laps, time_or_retired, grid, points]

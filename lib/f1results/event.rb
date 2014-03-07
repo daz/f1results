@@ -1,6 +1,7 @@
 module F1Results
   class Event
-    attr_accessor :season, :country, :type, :grand_prix, :results
+    attr_accessor :season, :type, :grand_prix, :results
+    attr_writer :country
 
     def initialize(args)
       args.each { |k,v| send("#{k}=", v) }
