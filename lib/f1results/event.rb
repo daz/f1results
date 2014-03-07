@@ -3,7 +3,7 @@ module F1Results
     attr_accessor :season, :type, :grand_prix, :results
     attr_writer :country
 
-    def initialize(args)
+    def initialize(args = {})
       args.each { |k,v| send("#{k}=", v) }
       @results = []
     end

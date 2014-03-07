@@ -8,7 +8,7 @@ module F1Results
 
     def position=(n)
       @position = case
-      when n == ''
+      when n.to_s.empty?
         nil
       when n.to_i == 0
         n
@@ -21,13 +21,14 @@ module F1Results
 
     def build(row)
       row.map! do |col|
-        col = col.strip.gsub(/\s+/, ' ')
-        col == '' ? nil : col
+        col = col.to_s.strip.gsub(/\s+/, ' ')
+        col.empty? ? nil : col
       end
-      self.position = row[0]
+
+      self.position  = row[0]
       @driver_number = row[1].to_i
-      @driver = row[2]
-      @team = row[3]
+      @driver        = row[2]
+      @team          = row[3]
       row
     end
   end
@@ -79,10 +80,10 @@ module F1Results
 
     def build(row)
       row = super
-      @laps = row[4].to_i
+      @laps                = row[4].to_i
       self.time_or_retired = row[5]
-      @grid = row[6].to_i
-      @points = row[7].to_i
+      @grid                = row[6].to_i
+      @points              = row[7].to_i
     end
   end
 end
