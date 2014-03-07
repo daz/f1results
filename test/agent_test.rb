@@ -1,7 +1,7 @@
 # encoding: utf-8
 require 'test_helper'
 
-class AgentTest < MiniTest::Unit::TestCase
+class AgentTest < MiniTest::Test
   include Fixtures
 
   def setup

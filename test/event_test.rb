@@ -1,7 +1,7 @@
 # encoding: utf-8
 require 'test_helper'
 
-class EventTest < MiniTest::Unit::TestCase
+class EventTest < MiniTest::Test
   def setup
     @event = F1Results::Event.new
     @event.results << F1Results::RaceResult.new([1, 2, 'Mark Webber', 'Red Bull Racing-Renault', 52, '1:25:11.288', 2, 25])

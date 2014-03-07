@@ -1,7 +1,7 @@
 # encoding: utf-8
 require 'test_helper'
 
-class ResultTest < MiniTest::Unit::TestCase
+class ResultTest < MiniTest::Test
   def test_time
     result = F1Results::RaceResult.new
     result.time_or_retired = '1:25:11.288'
