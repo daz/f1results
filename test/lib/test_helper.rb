@@ -31,7 +31,7 @@ module Fixtures
     uri = File.join(F1Results::BASEURL, hash[0])
     fixture = hash[1]
 
-    request = case
+    response = case
     when fixture.is_a?(Integer)
       { :status => fixture }
     when fixture.is_a?(String)
@@ -40,6 +40,6 @@ module Fixtures
         :body => File.read("#{File.dirname(__FILE__)}/../fixtures/#{fixture}") }
     end
 
-    stub_request(:get, uri).to_return(request)
+    stub_request(:get, uri).to_return(response)
   end
 end
