@@ -14,4 +14,9 @@ class EventTest < MiniTest::Test
     assert_kind_of Array, array.first
     assert_kind_of F1Results::RaceResult, @event.results.first
   end
+
+  def set_results
+    event = F1Results::Event.new(:results => @event.results)
+    assert_equal @event.results, event.results
+  end
 end

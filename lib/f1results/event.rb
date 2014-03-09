@@ -4,8 +4,8 @@ module F1Results
     attr_writer :country
 
     def initialize(args = {})
-      args.each { |k,v| send("#{k}=", v) }
       @results = []
+      args.each { |k,v| send("#{k}=", v) }
     end
 
     def country
