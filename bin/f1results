@@ -30,7 +30,7 @@ rescue Exception => e
   exit
 end
 
-title = [event.country, event.type.to_s.capitalize, event.grand_prix].join(' ')
+title = [event.season, event.country, event.type.to_s.capitalize].join(' - ') + "\n" + event.grand_prix
 table = Terminal::Table.new :title => title, :rows => event.to_a
 
 if event.qualifying?
