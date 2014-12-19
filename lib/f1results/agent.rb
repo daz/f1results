@@ -42,7 +42,7 @@ module F1Results
       end
 
       raise "No #{event.type} results for: #{season} #{country}" if results_link.nil?
-      click(results_link) if event.qualifying?
+      click(results_link)
       table = page.parser.xpath('//table[contains(@class, "raceResults")]')
 
       event.parse_results_table(table)
