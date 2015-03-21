@@ -3,51 +3,46 @@
 require 'rubygems'
 require 'optparse'
 require 'terminal-table'
-require 'f1results'
+require File.expand_path('../../lib/f1results.rb', __FILE__)
 
-options = {}
+year       = Time.now.year
+country    = ''
+event_type = :race
 
 optparse = OptionParser.new do |opts|
-  options[:type] = :race
-  opts.on('-q', '--qualifying', 'Qualifying') do
-    options[:type] = :qualifying
-  end
-end
-
-optparse.parse!
-
-season = ARGV[0] || Time.now.year
-country = if country = ARGV[1]
-  country.to_i == 0 ? country : country.to_i
-else
-  :latest
+  opts.on('-y', '--year=YEAR', Integer)      { |val| year = val }
+  opts.on('-c', '--country=COUNTRY', String) { |val| country = val.downcase }
+  opts.on('-e', '--event=EVENT', String)     { |val| event_type = val.downcase.to_sym }
+  opts.parse!
 end
 
 begin
-  event = F1Results.get(season, country, options[:type])
+  event = F1Results.get(year, country, event_type)
 rescue Exception => e
   puts e
   exit
 end
 
-title = [event.season, event.country, event.type.to_s.capitalize].join(' - ') + "\n" + event.grand_prix
-table = Terminal::Table.new :title => title, :rows => event.to_a
+title = "#{event.season} #{event.country} #{event.type_name}\n#{event.name}"
+table = Terminal::Table.new title: title, rows: event.to_a
 
-if event.qualifying?
-  cols = %W(Pos Num Driver Team Q1 Q2 Q3 Laps)
+if event.practice?
+  table.headings = %W(Pos Driver Team Time Laps)
+  table.align_column 0, :right
+  table.align_column 4, :right
+
+elsif event.qualifying?
+  table.headings = %W(Pos Driver Team Q1 Q2 Q3 Laps)
   table.align_column 0, :right
   table.align_column 1, :right
-  table.align_column 7, :right
+  table.align_column 6, :right
 
 elsif event.race?
-  cols = %W(Pos Num Driver Team Laps Time/Retired Grid Points)
+  table.headings = %W(Pos Driver Country Team Time/Retired Points)
   table.align_column 0, :right
-  table.align_column 1, :right
+  table.align_column 2, :center
   table.align_column 4, :right
   table.align_column 5, :right
-  table.align_column 6, :right
-  table.align_column 7, :right
 end
 
-table.headings = cols
 puts table

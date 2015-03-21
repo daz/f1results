@@ -1,4 +1,6 @@
-require File.expand_path('../lib/f1results/version', __FILE__)
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'f1results/version'
 
 Gem::Specification.new do |s|
   s.author        = 'Darren Jeacocke'
@@ -12,10 +14,11 @@ Gem::Specification.new do |s|
   s.name          = 'f1results'
   s.require_paths = ['lib']
   s.version       = F1Results::VERSION
-  s.add_dependency 'mechanize'
-  s.add_dependency 'terminal-table'
+  s.add_dependency 'mechanize', '~> 2.7'
+  s.add_dependency 'terminal-table', '~> 1.4.5'
+  s.add_dependency 'activesupport'
 
-  s.add_development_dependency 'rake'
-  s.add_development_dependency 'minitest'
-  s.add_development_dependency 'webmock'
+  s.add_development_dependency 'rake', '~> 10.1'
+  s.add_development_dependency 'minitest', '~> 5.3'
+  s.add_development_dependency 'webmock', '~> 1.17'
 end

@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'test_helper'
 
 class ResultTest < MiniTest::Test
@@ -30,46 +29,45 @@ class ResultTest < MiniTest::Test
     assert_equal '1:46.515', result.time
   end
 
-  def test_parse_race
-    result = F1Results::RaceResult.new(['5', '9', 'Kimi Räikkönen', 'Lotus-Renault', '52', '+10.3 secs', '6', '10'])
-    assert_equal 5, result.position
-    assert_equal 9, result.driver_number
-    assert_equal 'Kimi Räikkönen', result.driver
-    assert_equal 'Lotus-Renault', result.team
-    assert_equal 52, result.laps
-    assert_equal '+10.3 secs', result.time
-    assert_equal 6, result.grid
-    assert_equal 10, result.points
+  def test_parse_practice
+    result = F1Results::PracticeResult.new(['4', 'Carlos Sainz', 'Toro Rosso', '1:31.014',	'32'])
+    assert_equal 4, result.position
+    assert_equal 'Carlos Sainz', result.driver
+    assert_equal 'Toro Rosso', result.team
+    assert_equal '1:31.014', result.time
+    assert_equal 32, result.laps
   end
 
   def test_parse_qualifying
-    result = F1Results::QualifyingResult.new(['1', '5', 'Fernando Alonso', 'Ferrari', '1:46.515', '1:56.921', '1:51.746', '25'])
-    assert_equal 1, result.position
-    assert_equal 5, result.driver_number
-    assert_equal 'Fernando Alonso', result.driver
+    result = F1Results::QualifyingResult.new(['2', 'Nico Rosberg', 'Mercedes', '1:28.906', '1:27.097', '1:26.921', '14'])
+    assert_equal 2, result.position
+    assert_equal 'Nico Rosberg', result.driver
+    assert_equal 'Mercedes', result.team
+    assert_equal '1:28.906', result.q1
+    assert_equal '1:27.097', result.q2
+    assert_equal '1:26.921', result.q3
+    assert_equal 14, result.laps
+  end
+
+  def test_parse_race
+    result = F1Results::RaceResult.new(['3', 'Sebastian Vettel', 'GER', 'Ferrari', '+34.523s', '15'])
+    assert_equal 3, result.position
+    assert_equal 'Sebastian Vettel', result.driver
     assert_equal 'Ferrari', result.team
-    assert_equal '1:46.515', result.q1
-    assert_equal '1:56.921', result.q2
-    assert_equal '1:51.746', result.q3
-    assert_equal 25, result.laps
+    assert_equal '+34.523s', result.time
+    assert_equal 15, result.points
   end
 
   def test_parse_qualifying_with_blank_values
-    result = F1Results::QualifyingResult.new(['1', '5', 'Fernando Alonso', 'Ferrari', '1:46.515', '', '', ''])
-    assert_equal '1:46.515', result.q1
+    result = F1Results::QualifyingResult.new(['16', 'Marcus Ericsson', 'Sauber', '1:31.376', nil, nil, 10])
+    assert_equal '1:31.376', result.q1
     assert_equal nil, result.q2
     assert_equal nil, result.q3
-    assert_equal 0, result.laps
-  end
-
-  def test_parse_with_extra_whitespace
-    result = F1Results::RaceResult.new(['14', '17', 'Valtteri  Bottas', "   \n\nWilliams-Renault    ", '57', '+1 Lap', '16', ''])
-    assert_equal 'Valtteri Bottas', result.driver
-    assert_equal 'Williams-Renault', result.team
+    assert_equal 10, result.laps
   end
 
   def test_race_to_a
-    result = F1Results::RaceResult.new(['5', '9', 'Kimi Räikkönen', 'Lotus-Renault', '52', '+10.3 secs', '6', '10'])
-    assert_equal [5, 9, 'Kimi Räikkönen', 'Lotus-Renault', 52, '+10.3 secs', 6, 10], result.to_a
+    result = F1Results::RaceResult.new(['3', 'Sebastian Vettel', 'GER', 'Ferrari', '+34.523s', '15'])
+    assert_equal [3, 'Sebastian Vettel', 'GER', 'Ferrari', '+34.523s', 15], result.to_a
   end
 end
