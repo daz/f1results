@@ -15,9 +15,9 @@ Gem::Specification.new do |s|
   s.name          = 'f1results'
   s.require_paths = ['lib']
   s.version       = F1Results::VERSION
-  s.add_dependency 'mechanize', '~> 2.7'
-  s.add_dependency 'terminal-table', '~> 1.4'
-  s.add_dependency 'activesupport', '~> 0'
+  s.add_runtime_dependency 'mechanize', '~> 2.7'
+  s.add_runtime_dependency 'terminal-table', '~> 1.4'
+  s.add_runtime_dependency 'activesupport', '~> 4'
 
   s.add_development_dependency 'rake', '~> 10.1'
   s.add_development_dependency 'minitest', '~> 5.3'
