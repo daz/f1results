@@ -40,11 +40,11 @@ class AgentTest < MiniTest::Test
   def test_get_event_2015_malaysia_practice2
     event = @agent.get_event(2015, 'Malaysia', :practice2)
     assert event.practice?
-    # assert_equal 'Australia', event.country
-    # assert_equal '2015 FORMULA 1 ROLEX AUSTRALIAN GRAND PRIX', event.name
-    # assert_equal 16, event.results.length
-    # assert_equal 'Nico Rosberg', event.winner
-    # assert_equal 'Romain Grosjean', event.loser
+    assert_equal 'Malaysia', event.country
+    assert_equal '2015 FORMULA 1 PETRONAS MALAYSIA GRAND PRIX', event.name
+    assert_equal 20, event.results.length
+    assert_equal 'Lewis Hamilton', event.winner
+    assert_equal 'Roberto Merhi', event.loser
   end
 
   def test_get_event_with_bad_year
