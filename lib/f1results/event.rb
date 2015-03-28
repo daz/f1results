@@ -49,7 +49,7 @@ module F1Results
     end
 
     def practice?
-      @type.to_s.gsub(/\d/, '') == 'practice'
+      /^practice(1|2|3)$/ =~ @type.to_s
     end
 
     def qualifying?
