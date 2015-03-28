@@ -14,6 +14,7 @@ module F1Results
 
     COLUMN_ALIASES = {
       p:              :position,
+      pos:            :position,
       name:           :driver,
       no:             :driver_number,
       country:        :driver_country_abbr,

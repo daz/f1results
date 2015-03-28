@@ -22,7 +22,7 @@ module F1Results
     end
 
     def laps
-      @laps.to_i
+      @laps.to_i < 1 ? nil : @laps.to_i
     end
 
     def gap
