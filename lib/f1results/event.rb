@@ -4,12 +4,22 @@ module F1Results
   class Event
     attr_accessor :season, :country, :type, :name, :results
 
-    TYPES = {
+    TYPE_ALIASES = {
       p1: :practice1,
       p2: :practice2,
       p3: :practice3,
       q:  :qualifying,
       r:  :race
+    }
+
+    COLUMN_ALIASES = {
+      p:              :position,
+      name:           :driver,
+      no:             :driver_number,
+      country:        :driver_country_abbr,
+      best_time:      :time,
+      race_time:      :time,
+      points_awarded: :points
     }
 
     def initialize(args = {})
@@ -26,11 +36,7 @@ module F1Results
     end
 
     def type=(type)
-      if type.to_s.length <= 2
-        @type = TYPES[type]
-      else
-        @type = type
-      end
+      @type = TYPE_ALIASES[type] || type
     end
 
     # Human readable type, e.g. "Practice 1", "Qualifying"
@@ -69,19 +75,22 @@ module F1Results
     def parse_results_table(table)
       @results = []
 
-      # Remove driver abbreviation from cell, shown only in race results
+      # Remove driver abbreviation from cell
       table.xpath('//span[@class="tla"]').each(&:remove)
 
       # Turn HTML table into an array of arrays
       data = table.xpath('//tr').map do |row|
-        row.xpath('./td').map do |cell|
+        row.xpath('./td|./th').map do |cell|
           cell = cell.text.gsub(/[[:space:]]+/, ' ').strip
           cell.blank? ? nil : cell
         end
       end
 
-      # Remove rows with empty position cells (Q1 107% Time), and table header if it's there
-      data.reject! { |row| row[0].nil? || row[0] == 'P' }
+      # Remove rows that have the cell "Q1 107% Time"
+      regex = /107%/
+      data.reject! { |row| row.any? { |cell| regex =~ cell } }
+
+      header = parse_header(data.shift)
 
       data.each_with_index do |row, i|
         klass = case
@@ -93,12 +102,28 @@ module F1Results
           RaceResult
         end
 
-        result = klass.new(row)
-        result.index = i
+        hash = Hash[header.zip(row)]
+        hash[:index] = i
+
+        result = klass.new(hash)
         @results << result
       end
 
       self
     end
+
+    private
+
+      def parse_header(header)
+        header.map! do |cell|
+          # Fix i18n cells that look like this
+          # {'Position' @ i18n}, {'Driver' @ i18n}, ...
+          cell = cell.match(/(')(.+)(')/)[2] if /i18n/ =~ cell
+          cell = cell.strip.parameterize('_').to_sym
+          COLUMN_ALIASES[cell] || cell
+        end
+
+        return header
+      end
   end
 end

@@ -3,8 +3,8 @@ require 'test_helper'
 class EventTest < MiniTest::Test
   def setup
     @event = F1Results::Event.new
-    @event.results << F1Results::RaceResult.new([1, 'Mark Webber', 'AUS', 'Red Bull Racing-Renault', '1:25:11.288', 2])
-    @event.results << F1Results::RaceResult.new([2, 'Fernando Alonso', 'ESP', 'Ferrari', '+3.0 secs', 1])
+    @event.results << F1Results::RaceResult.new(position: 1, driver: 'Mark Webber', driver_country_abbr: 'AUS', team: 'Red Bull Racing-Renault', time: '1:25:11.288', points: 2)
+    @event.results << F1Results::RaceResult.new(position: 2, driver: 'Fernando Alonso', driver_country_abbr: 'ESP', team: 'Ferrari', time: '+3.0 secs', points: 1)
   end
 
   def test_type
@@ -12,6 +12,8 @@ class EventTest < MiniTest::Test
     assert_equal 'qualifying', @event.type_slug
     @event.type = :practice3
     assert_equal 'practice-3', @event.type_slug
+    @event.type = :p3
+    assert_equal :practice3, @event.type
   end
 
   def test_country

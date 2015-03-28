@@ -27,14 +27,14 @@ title = "#{event.season} #{event.country} #{event.type_name}\n#{event.name}"
 table = Terminal::Table.new title: title, rows: event.to_a
 
 if event.practice?
-  table.headings = %W(Pos Driver Team Time Laps)
+  table.headings = %W(Pos Num Driver Team Time Gap Laps)
   table.align_column 0, :right
   table.align_column 4, :right
+  table.align_column 6, :right
 
 elsif event.qualifying?
   table.headings = %W(Pos Driver Team Q1 Q2 Q3 Laps)
   table.align_column 0, :right
-  table.align_column 1, :right
   table.align_column 6, :right
 
 elsif event.race?

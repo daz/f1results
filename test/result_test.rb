@@ -30,7 +30,7 @@ class ResultTest < MiniTest::Test
   end
 
   def test_parse_practice
-    result = F1Results::PracticeResult.new(['4', 'Carlos Sainz', 'Toro Rosso', '1:31.014',	'32'])
+    result = F1Results::PracticeResult.new(position: '4', driver: 'Carlos Sainz', team: 'Toro Rosso', time: '1:31.014', laps:	'32')
     assert_equal 4, result.position
     assert_equal 'Carlos Sainz', result.driver
     assert_equal 'Toro Rosso', result.team
@@ -39,7 +39,7 @@ class ResultTest < MiniTest::Test
   end
 
   def test_parse_qualifying
-    result = F1Results::QualifyingResult.new(['2', 'Nico Rosberg', 'Mercedes', '1:28.906', '1:27.097', '1:26.921', '14'])
+    result = F1Results::QualifyingResult.new(position: '2', driver: 'Nico Rosberg', team: 'Mercedes', q1: '1:28.906', q2: '1:27.097', q3: '1:26.921', laps: '14')
     assert_equal 2, result.position
     assert_equal 'Nico Rosberg', result.driver
     assert_equal 'Mercedes', result.team
@@ -50,7 +50,7 @@ class ResultTest < MiniTest::Test
   end
 
   def test_parse_race
-    result = F1Results::RaceResult.new(['3', 'Sebastian Vettel', 'GER', 'Ferrari', '+34.523s', '15'])
+    result = F1Results::RaceResult.new(position: '3', driver: 'Sebastian Vettel', driver_country_abbr: 'GER', team: 'Ferrari', time: '+34.523s', points: '15')
     assert_equal 3, result.position
     assert_equal 'Sebastian Vettel', result.driver
     assert_equal 'Ferrari', result.team
@@ -59,7 +59,7 @@ class ResultTest < MiniTest::Test
   end
 
   def test_parse_qualifying_with_blank_values
-    result = F1Results::QualifyingResult.new(['16', 'Marcus Ericsson', 'Sauber', '1:31.376', nil, nil, 10])
+    result = F1Results::QualifyingResult.new(position: '16', driver: 'Marcus Ericsson', team: 'Sauber', q1: '1:31.376', q2: nil, q3: nil, laps: 10)
     assert_equal '1:31.376', result.q1
     assert_equal nil, result.q2
     assert_equal nil, result.q3
@@ -67,7 +67,7 @@ class ResultTest < MiniTest::Test
   end
 
   def test_race_to_a
-    result = F1Results::RaceResult.new(['3', 'Sebastian Vettel', 'GER', 'Ferrari', '+34.523s', '15'])
+    result = F1Results::RaceResult.new(position: '3', driver: 'Sebastian Vettel', driver_country_abbr: 'GER', team: 'Ferrari', time: '+34.523s', points: '15')
     assert_equal [3, 'Sebastian Vettel', 'GER', 'Ferrari', '+34.523s', 15], result.to_a
   end
 end

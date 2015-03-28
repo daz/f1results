@@ -37,6 +37,16 @@ class AgentTest < MiniTest::Test
     assert_equal 'Romain Grosjean', event.loser
   end
 
+  def test_get_event_2015_malaysia_practice2
+    event = @agent.get_event(2015, 'Malaysia', :practice2)
+    assert event.practice?
+    # assert_equal 'Australia', event.country
+    # assert_equal '2015 FORMULA 1 ROLEX AUSTRALIAN GRAND PRIX', event.name
+    # assert_equal 16, event.results.length
+    # assert_equal 'Nico Rosberg', event.winner
+    # assert_equal 'Romain Grosjean', event.loser
+  end
+
   def test_get_event_with_bad_year
     assert_raises RuntimeError, 'No results' do
       @agent.get_event(1900, 'Australia', :race)

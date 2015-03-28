@@ -1,9 +1,9 @@
 module F1Results
   class Result
-    attr_accessor :index, :position, :driver, :team, :laps
+    attr_accessor :index, :position, :driver, :driver_number, :driver_country_abbr, :team, :time, :gap, :laps
 
-    def initialize(row = nil)
-      build(row) unless row.nil?
+    def initialize(args = {})
+      args.each { |k,v| send("#{k.to_s}=", v) }
     end
 
     def position=(n)
@@ -17,30 +17,23 @@ module F1Results
       end
     end
 
-    private
+    def driver_number
+      @driver_number.to_i == 0 ? nil : @driver_number.to_i
+    end
 
-      def build(row)
-        self.position = row[0]
-        @driver       = row[1]
-        row
-      end
+    def laps
+      @laps.to_i
+    end
+
+    def gap
+      @gap.to_f == 0.0 ? nil : @gap.to_f
+    end
   end
 
   class PracticeResult < Result
-    attr_accessor :time
-
     def to_a
-      [position, driver, team, time, laps]
+      [position, driver_number, driver, team, time, gap, laps]
     end
-
-    private
-
-      def build(row)
-        row = super
-        @team = row[2]
-        @time = row[3]
-        @laps = row[4].to_i
-      end
   end
 
   class QualifyingResult < Result
@@ -53,21 +46,10 @@ module F1Results
     def time
       q3 || q2 || q1
     end
-
-    private
-
-      def build(row)
-        row = super
-        @team = row[2]
-        @q1   = row[3]
-        @q2   = row[4]
-        @q3   = row[5]
-        @laps = row[6].to_i
-      end
   end
 
   class RaceResult < Result
-    attr_accessor :driver_country_abbr, :time, :retired, :points
+    attr_accessor :retired, :points
 
     def to_a
       [position, driver, driver_country_abbr, team, time_or_retired, points]
@@ -85,14 +67,8 @@ module F1Results
       time || retired
     end
 
-    private
-
-      def build(row)
-        row = super
-        @driver_country_abbr = row[2]
-        @team                = row[3]
-        self.time_or_retired = row[4]
-        @points              = row[5].to_i
-      end
+    def points
+      @points.to_i
+    end
   end
 end
