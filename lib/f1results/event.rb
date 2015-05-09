@@ -20,6 +20,7 @@ module F1Results
       country:        :driver_country_abbr,
       best_time:      :time,
       race_time:      :time,
+      fastest:        :time,
       points_awarded: :points
     }
 
