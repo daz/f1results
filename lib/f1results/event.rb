@@ -12,18 +12,6 @@ module F1Results
       r:  :race
     }
 
-    COLUMN_ALIASES = {
-      p:              :position,
-      pos:            :position,
-      name:           :driver,
-      no:             :driver_number,
-      country:        :driver_country_abbr,
-      best_time:      :time,
-      race_time:      :time,
-      fastest:        :time,
-      points_awarded: :points
-    }
-
     def initialize(args = {})
       @results = []
       args.each { |k,v| send("#{k}=", v) }
@@ -116,16 +104,14 @@ module F1Results
 
     private
 
+      # Turn array of words to symbols
       def parse_header(header)
-        header.map! do |cell|
+        header.map do |cell|
           # Fix i18n cells that look like this
           # {'Position' @ i18n}, {'Driver' @ i18n}, ...
           cell = cell.match(/(')(.+)(')/)[2] if /i18n/ =~ cell
-          cell = cell.strip.parameterize('_').to_sym
-          COLUMN_ALIASES[cell] || cell
+          cell.strip.parameterize('_').to_sym
         end
-
-        return header
       end
   end
 end

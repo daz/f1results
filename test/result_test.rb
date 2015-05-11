@@ -70,4 +70,10 @@ class ResultTest < MiniTest::Test
     result = F1Results::RaceResult.new(position: '3', driver: 'Sebastian Vettel', driver_country_abbr: 'GER', team: 'Ferrari', time: '+34.523s', points: '15')
     assert_equal [3, 'Sebastian Vettel', 'GER', 'Ferrari', '+34.523s', 15], result.to_a
   end
+
+  def test_unknown_key_doesnt_raise_error
+    assert_nothing_raised do
+      F1Results::Result.new(some_silly_column_name: 'value')
+    end
+  end
 end

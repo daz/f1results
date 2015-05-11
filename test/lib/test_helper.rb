@@ -1,6 +1,7 @@
 require 'f1results'
 require 'minitest/autorun'
 require 'webmock'
+require 'minitest/assertions'
 
 module Fixtures
   include WebMock::API
@@ -37,4 +38,10 @@ module Fixtures
 
       stub_request(:get, uri).to_return(response)
     end
+end
+
+module Minitest::Assertions
+  def assert_nothing_raised(*)
+    yield
+  end
 end

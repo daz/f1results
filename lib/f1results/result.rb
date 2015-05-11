@@ -2,8 +2,19 @@ module F1Results
   class Result
     attr_accessor :index, :position, :driver, :driver_number, :driver_country_abbr, :team, :time, :gap, :laps
 
+    alias :p=         :position=
+    alias :name=      :driver=
+    alias :no=        :driver_number=
+    alias :country=   :driver_country_abbr=
+    alias :best_time= :time=
+    alias :race_time= :time=
+    alias :fastest=   :time=
+
     def initialize(args = {})
-      args.each { |k,v| send("#{k.to_s}=", v) }
+      args.each do |k, v|
+        # rescue here in case the results table has an obscure head cell like "Driver's Fastest Time"
+        send("#{k.to_s}=", v) rescue nil
+      end
     end
 
     def position=(n)
@@ -50,6 +61,8 @@ module F1Results
 
   class RaceResult < Result
     attr_accessor :retired, :points
+
+    alias :points_awarded= :points=
 
     def to_a
       [position, driver, driver_country_abbr, team, time_or_retired, points]
