@@ -3,6 +3,7 @@ module F1Results
     attr_accessor :index, :position, :driver, :driver_number, :driver_country_abbr, :team, :time, :gap, :laps
 
     alias :p=         :position=
+    alias :pos=       :position=
     alias :name=      :driver=
     alias :no=        :driver_number=
     alias :country=   :driver_country_abbr=
