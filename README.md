@@ -22,4 +22,4 @@ Or install it yourself as:
 
 ### Command Line
 
-    $ f1results <season> [<round>] [-q, --qualifying]
+    $ f1results -y <year> -c <country> [-e <EVENT>]

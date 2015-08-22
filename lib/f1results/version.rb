@@ -1,3 +1,3 @@
 module F1Results
-  VERSION = '0.2-alpha.3'
+  VERSION = '0.5-alpha'
 end

@@ -18,7 +18,10 @@ module Fixtures
       stub 'content/fom-website/en/championship/results/2015-race-results/2015-australia-results/practice-1.html' => '2015_australia_p1.html'
       stub 'content/fom-website/en/championship/results/2015-race-results/2015-australia-results/race.html'       => '2015_australia_race.html'
       stub 'content/fom-website/en/championship/results/2015-race-results/2015-malaysia-results/practice-2.html'  => '2015_malaysia_p2.html'
+      stub 'content/fom-website/en/championship/results/2015-race-results/2015-Hungary-results/race.html'         => '2015_hungary_race.html'
       stub 'content/fom-website/en/championship/results/2015-race-results/2015-new-zealand-results/race.html'     => 404
+      stub 'content/fom-website/en/championship/results/2015-race-results/2015-New-Zealand-results/race.html'     => 404
+      stub 'content/fom-website/en/championship/results/1900-race-results/1900-Australia-results/race.html'       => 404
       stub 'content/fom-website/en/championship/results/1900-race-results/1900-australia-results/race.html'       => 404
     end
 

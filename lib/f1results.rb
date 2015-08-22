@@ -6,7 +6,7 @@ require 'f1results/result'
 module F1Results
   BASEURL = 'http://www.formula1.com'
 
-  # Get results from formula1.com for a given season, country, and event type
+  # Get results from formula1.com for a given year, country, and event type
   # (race or qualifying)
   #
   #   F1Results.get(2010, 'australia', :qualifying)
@@ -15,7 +15,8 @@ module F1Results
   # returns multiple objects of type `F1Results::Result`
 
   def self.get(year, country, type = :race)
-    agent = F1Results::Agent.new
-    agent.get_event(year, country, type)
+    event = Event.new(year: year, country: country, type: type)
+    event.fetch_results
+    return event
   end
 end

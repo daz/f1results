@@ -16,14 +16,13 @@ optparse = OptionParser.new do |opts|
   opts.parse!
 end
 
-begin
-  event = F1Results.get(year, country, event_type)
-rescue Exception => e
-  puts e
+event = F1Results.get(year, country, event_type)
+if event.results.empty?
+  puts "No results for #{year} #{country} #{event_type}"
   exit
 end
 
-title = "#{event.season} #{event.country} #{event.type_name}\n#{event.name}"
+title = "#{event.year} #{event.country_name} #{event.type_name}\n#{event.name}"
 table = Terminal::Table.new title: title, rows: event.to_a
 
 if event.practice?
