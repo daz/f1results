@@ -111,7 +111,7 @@ module F1Results
             PracticeResult
           when qualifying?
             QualifyingResult
-          when race?
+          else
             RaceResult
           end
 
