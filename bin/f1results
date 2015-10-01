@@ -8,21 +8,29 @@ require File.expand_path('../../lib/f1results.rb', __FILE__)
 year       = Time.now.year
 country    = ''
 event_type = :race
+url        = nil
 
 optparse = OptionParser.new do |opts|
   opts.on('-y', '--year=YEAR', Integer)      { |val| year = val }
   opts.on('-c', '--country=COUNTRY', String) { |val| country = val.downcase }
   opts.on('-e', '--event=EVENT', String)     { |val| event_type = val.downcase.to_sym }
+  opts.on('-u', '--url=URL', String)         { |val| url = val }
   opts.parse!
 end
 
-event = F1Results.get(year, country, event_type)
-if event.results.empty?
-  puts "No results for #{year} #{country} #{event_type}"
+begin
+  if url.nil?
+    event = F1Results.fetch(year, country, event_type)
+  else
+    event = F1Results.fetch_with_url(url)
+  end
+rescue
+  event_summary = url || "#{year} #{country} #{event_type}"
+  puts "No results for #{event_summary}"
   exit
 end
 
-title = "#{event.year} #{event.country_name} #{event.type_name}\n#{event.name}"
+title = url.nil? ? "#{event.year} #{event.country_name} #{event.type_name}\n#{event.name}" : event.name
 table = Terminal::Table.new title: title, rows: event.to_a
 
 if event.practice?
