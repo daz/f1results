@@ -20,6 +20,8 @@ module F1Results
     def fetch_results_with_url(url)
       begin
         get(url)
+        @event.type = parse_event_type if @event.type.nil?
+        @event.country = parse_event_country if @event.country.nil?
         @event.name = parse_event_title
         @event.results = parse_event_results
         return @event
@@ -36,8 +38,16 @@ module F1Results
 
     private
 
+      def parse_event_type
+        return page.parser.xpath('//h1[@class="headline"]').text.strip rescue nil
+      end
+
+      def parse_event_country
+        return page.parser.xpath('//a[@class="tag-link"]').text.strip.parameterize rescue nil
+      end
+
       def parse_event_title
-        return page.parser.xpath('//a[contains(@class, "level-0")]').text
+        return page.parser.xpath('//a[contains(@class, "level-0")]').text rescue nil
       end
 
       def parse_event_results

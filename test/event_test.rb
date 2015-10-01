@@ -16,6 +16,24 @@ class EventTest < MiniTest::Test
     assert_equal :practice3, @event.type
   end
 
+  def test_type_name
+    @event.type = :practice3
+    assert_equal 'Practice 3', @event.type_name
+    @event.type = :qualifying
+    assert_equal 'Qualifying', @event.type_name
+    @event.type = :race
+    assert_equal 'Race', @event.type_name
+  end
+
+  def test_type_setter_with_humanized_input
+    @event.type = 'Practice 3'
+    assert_equal :practice3, @event.type
+    @event.type = 'Qualifying'
+    assert_equal :qualifying, @event.type
+    @event.type = 'Race'
+    assert_equal :race, @event.type
+  end
+
   def test_type_boolean_methods
     @event.type = :race
     assert @event.race?

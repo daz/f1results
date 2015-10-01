@@ -50,6 +50,8 @@ class AgentTest < MiniTest::Test
   def test_fetch_results_2015_hungary_race
     event = @agent.fetch_results_with_url('http://www.formula1.com/content/fom-website/en/championship/results/2015-race-results/2015-Hungary-results/race.html')
     assert_equal 'FORMULA 1 PIRELLI MAGYAR NAGYDÍJ 2015', event.name
+    assert_equal 'hungary', event.country
+    assert event.race?
     assert_equal 20, event.results.length
     assert_equal 'Sebastian Vettel', event.winner
     assert_equal 'Nico Hulkenberg', event.loser

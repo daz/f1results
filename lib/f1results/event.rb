@@ -26,6 +26,7 @@ module F1Results
     end
 
     def type=(type)
+      type = type.to_s.downcase.gsub(' ', '').to_sym
       @type = TYPE_ALIASES[type] || type
     end
 
