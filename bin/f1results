@@ -19,10 +19,10 @@ optparse = OptionParser.new do |opts|
 end
 
 begin
-  if url.nil?
-    event = F1Results.fetch(year, country, event_type)
+  event = if url.nil?
+    F1Results.fetch(year, country, event_type)
   else
-    event = F1Results.fetch_with_url(url)
+    F1Results.fetch_with_url(url)
   end
 rescue
   event_summary = url || "#{year} #{country} #{event_type}"
