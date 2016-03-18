@@ -22,4 +22,4 @@ Or install it yourself as:
 
 ### Command Line
 
-    $ f1results -y <year> -c <country> [-e <EVENT>]
+    $ f1results -y <year> -c <country> [-e p1|p2|p3|q|r]
