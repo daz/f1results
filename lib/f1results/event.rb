@@ -2,7 +2,7 @@ require 'active_support/core_ext/string'
 
 module F1Results
   class Event
-    attr_accessor :year, :country, :type, :name, :results
+    attr_accessor :year, :country, :country_slug, :type, :name, :results, :url
 
     TYPE_ALIASES = {
       p1: :practice1,
@@ -15,14 +15,6 @@ module F1Results
     def initialize(args = {})
       @results = []
       args.each { |k,v| send("#{k}=", v) }
-    end
-
-    def country_name
-      @country.to_s.titleize
-    end
-
-    def country_slug
-      @country.to_s.parameterize
     end
 
     def type=(type)
@@ -55,21 +47,25 @@ module F1Results
       @results.map(&:to_a)
     end
 
-    def winner
-      @results.first.driver
+    def [](i)
+      @results[i]
     end
 
-    def loser
-      @results.last.driver
+    def winning
+      self[0]
     end
 
-    def fetch_results
-      agent = F1Results::Agent.new(self)
-      agent.fetch_results
+    def losing
+      self[-1]
     end
 
-    def fetch_results_with_url(url)
-      agent = F1Results::Agent.new(self)
+    def get_results
+      agent = F1Results::Agent.new
+      agent.get_results(self)
+    end
+
+    def get_results_with_url(url)
+      agent = F1Results::Agent.new
       agent.fetch_results_with_url(url)
     end
   end

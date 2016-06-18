@@ -49,11 +49,6 @@ class EventTest < MiniTest::Test
     refute @event.practice?
   end
 
-  def test_country_name
-    @event.country = 'great britain'
-    assert_equal 'Great Britain', @event.country_name
-  end
-
   def test_to_array
     @event.results << F1Results::RaceResult.new(position: 1, driver: 'Mark Webber', driver_country_abbr: 'AUS', team: 'Red Bull Racing-Renault', time: '1:25:11.288', points: 2)
     @event.results << F1Results::RaceResult.new(position: 2, driver: 'Fernando Alonso', driver_country_abbr: 'ESP', team: 'Ferrari', time: '+3.0 secs', points: 1)

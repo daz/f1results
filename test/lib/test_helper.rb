@@ -13,16 +13,36 @@ module Fixtures
 
   private
 
+    def events(name)
+      @agent ||= F1Results::Agent.new
+      file = "#{name.to_s.gsub('_', '-')}.html"
+      @agent.get_results_with_url fixture_url(file)
+    end
+
     def override_requests
-      stub 'content/fom-website/en/championship/results/2015-race-results/2015-australia-results/qualifying.html' => '2015_australia_qualifying.html'
-      stub 'content/fom-website/en/championship/results/2015-race-results/2015-australia-results/practice-1.html' => '2015_australia_p1.html'
-      stub 'content/fom-website/en/championship/results/2015-race-results/2015-australia-results/race.html'       => '2015_australia_race.html'
-      stub 'content/fom-website/en/championship/results/2015-race-results/2015-malaysia-results/practice-2.html'  => '2015_malaysia_p2.html'
-      stub 'content/fom-website/en/championship/results/2015-race-results/2015-Hungary-results/race.html'         => '2015_hungary_race.html'
-      stub 'content/fom-website/en/championship/results/2015-race-results/2015-new-zealand-results/race.html'     => 404
-      stub 'content/fom-website/en/championship/results/2015-race-results/2015-New-Zealand-results/race.html'     => 404
-      stub 'content/fom-website/en/championship/results/1900-race-results/1900-Australia-results/race.html'       => 404
-      stub 'content/fom-website/en/championship/results/1900-race-results/1900-australia-results/race.html'       => 404
+      stub 'content/fom-website/en/results.html/1950/races/96/indianapolis-500/fastest-laps.html' => '1950-indianapolis-500-fastest-laps.html'
+      stub 'content/fom-website/en/results.html/1950/races/96/indianapolis-500/qualifying-0.html' => '1950-indianapolis-500-qualifying-0.html'
+      stub 'content/fom-website/en/results.html/1950/races/96/indianapolis-500/race-result.html' => '1950-indianapolis-500-race-result.html'
+      stub 'content/fom-website/en/results.html/1950/races.html' => '1950-races.html'
+
+      stub 'content/fom-website/en/results.html/1984/brazil/466/fastest-laps.html' => '1984-brazil-fastest-laps.html'
+      stub 'content/fom-website/en/results.html/1984/brazil/466/qualifying-0.html' => '1984-brazil-qualifying-0.html'
+      stub 'content/fom-website/en/results.html/1984/brazil/466/qualifying-1.html' => '1984-brazil-qualifying-1.html'
+      stub 'content/fom-website/en/results.html/1984/brazil/466/qualifying-2.html' => '1984-brazil-qualifying-2.html'
+      stub 'content/fom-website/en/results.html/1984/brazil/466/race-result.html' => '1984-brazil-race-result.html'
+      stub 'content/fom-website/en/results.html/1984/brazil/466/starting-grid.html' => '1984-brazil-starting-grid.html'
+      stub 'content/fom-website/en/results.html/1984/brazil/466/warm-up.html' => '1984-brazil-warm-up.html'
+      stub 'content/fom-website/en/results.html/1984/races.html' => '1984-races.html'
+
+      stub 'content/fom-website/en/results.html/2016/races/938/australia/fastest-laps.html' => '2016-australia-fastest-laps.html'
+      stub 'content/fom-website/en/results.html/2016/races/938/australia/pit-stop-summary.html' => '2016-australia-pit-stop-summary.html'
+      stub 'content/fom-website/en/results.html/2016/races/938/australia/practice-1.html' => '2016-australia-practice-1.html'
+      stub 'content/fom-website/en/results.html/2016/races/938/australia/qualifying.html' => '2016-australia-qualifying.html'
+      stub 'content/fom-website/en/results.html/2016/races/938/australia/race-result.html' => '2016-australia-race-result.html'
+      stub 'content/fom-website/en/results.html/2016/races.html' => '2016-races.html'
+
+      stub 'content/fom-website/en/results.html/1900/races.html'     => 404
+      # stub ''     => 404
     end
 
     def stub(hash)
@@ -36,15 +56,32 @@ module Fixtures
       when fixture.is_a?(String)
         { status:  200,
           headers: { 'Content-Type' => 'text/html' },
-          body:    File.read("#{File.dirname(__FILE__)}/../fixtures/#{fixture}") }
+          body:    File.read(fixture_path(fixture)) }
       end
 
       stub_request(:get, uri).to_return(response)
+    end
+
+    def fixture_path(file)
+      File.join File.expand_path(File.dirname(__FILE__)), '..', 'fixtures', file
+    end
+
+    def fixture_url(file)
+      "file://#{fixture_path(file)}"
     end
 end
 
 module Minitest::Assertions
   def assert_nothing_raised(*)
     yield
+  end
+
+  def assert_raise_with_message(e, message, &block)
+    e = assert_raises(e, &block)
+    if message.is_a?(Regexp)
+      assert_match(message, e.message)
+    else
+      assert_equal(message, e.message)
+    end
   end
 end

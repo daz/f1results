@@ -12,7 +12,7 @@ url        = nil
 
 optparse = OptionParser.new do |opts|
   opts.on('-y', '--year=YEAR', Integer)      { |val| year = val }
-  opts.on('-c', '--country=COUNTRY', String) { |val| country = val.downcase }
+  opts.on('-c', '--country=COUNTRY', String) { |val| country = val.titleize }
   opts.on('-e', '--event=EVENT', String)     { |val| event_type = val.downcase.to_sym }
   opts.on('-u', '--url=URL', String)         { |val| url = val }
   opts.parse!
@@ -24,33 +24,39 @@ begin
   else
     F1Results.fetch_with_url(url)
   end
-rescue
-  event_summary = url || "#{year} #{country} #{event_type}"
-  puts "No results for #{event_summary}"
+rescue RuntimeError => e
+  puts e
   exit
 end
 
-title = url.nil? ? "#{event.year} #{event.country_name} #{event.type_name}\n#{event.name}" : event.name
+title = url.nil? ? "#{event.year} #{event.country} #{event.type_name}\n#{event.name}" : event.name
 table = Terminal::Table.new title: title, rows: event.to_a
 
 if event.practice?
-  table.headings = %W(Pos Num Driver Team Time Gap Laps)
+  table.headings = %W(Pos No Driver Team Time Gap Laps)
   table.align_column 0, :right
   table.align_column 1, :right
   table.align_column 4, :right
+  table.align_column 5, :right
   table.align_column 6, :right
 
 elsif event.qualifying?
-  table.headings = %W(Pos Driver Team Q1 Q2 Q3 Laps)
+  table.headings = %W(Pos No Driver Team Q1 Q2 Q3 Laps)
   table.align_column 0, :right
-  table.align_column 6, :right
-
-elsif event.race?
-  table.headings = %W(Pos Driver Country Team Time/Retired Points)
-  table.align_column 0, :right
-  table.align_column 2, :center
+  table.align_column 1, :right
   table.align_column 4, :right
   table.align_column 5, :right
+  table.align_column 6, :right
+  table.align_column 7, :right
+
+elsif event.race?
+  table.headings = %W(Pos No Driver Team Laps Time/Retired Points)
+  table.align_column 0, :right
+  table.align_column 1, :right
+  table.align_column 4, :right
+  table.align_column 5, :right
+  table.align_column 6, :right
 end
 
+puts event.results[0].inspect
 puts table

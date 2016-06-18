@@ -30,31 +30,34 @@ class ResultTest < MiniTest::Test
   end
 
   def test_parse_practice
-    result = F1Results::PracticeResult.new(position: '4', driver: 'Carlos Sainz', team: 'Toro Rosso', time: '1:31.014', laps:	'32')
-    assert_equal 4, result.position
-    assert_equal 'Carlos Sainz', result.driver
-    assert_equal 'Toro Rosso', result.team
-    assert_equal '1:31.014', result.time
-    assert_equal 32, result.laps
-  end
-
-  def test_parse_qualifying
-    result = F1Results::QualifyingResult.new(position: '2', driver: 'Nico Rosberg', team: 'Mercedes', q1: '1:28.906', q2: '1:27.097', q3: '1:26.921', laps: '14')
+    hash = { pos: '2', no: '26', driver: 'Daniil Kvyat', car: 'Red Bull Racing TAG Heuer', time: '1:30.146', gap: '+0.421s', laps: '14' }
+    result = F1Results::PracticeResult.new hash
     assert_equal 2, result.position
-    assert_equal 'Nico Rosberg', result.driver
-    assert_equal 'Mercedes', result.team
-    assert_equal '1:28.906', result.q1
-    assert_equal '1:27.097', result.q2
-    assert_equal '1:26.921', result.q3
+    assert_equal 'Daniil Kvyat', result.driver
+    assert_equal 'Red Bull Racing TAG Heuer', result.team
+    assert_equal '1:30.146', result.time
     assert_equal 14, result.laps
   end
 
+  def test_parse_qualifying
+    hash = { pos: '8', no: '3', driver: 'Daniel Ricciardo', car: 'Red Bull Racing TAG Heuer', q1: '1:26.945', q2: '1:25.599', q3: '1:25.589', laps: '15' }
+    result = F1Results::QualifyingResult.new hash
+    assert_equal 8, result.position
+    assert_equal 'Daniel Ricciardo', result.driver
+    assert_equal 'Red Bull Racing TAG Heuer', result.team
+    assert_equal '1:26.945', result.q1
+    assert_equal '1:25.599', result.q2
+    assert_equal '1:25.589', result.q3
+    assert_equal 15, result.laps
+  end
+
   def test_parse_race
-    result = F1Results::RaceResult.new(position: '3', driver: 'Sebastian Vettel', driver_country_abbr: 'GER', team: 'Ferrari', time: '+34.523s', points: '15')
+    hash = { pos: '3', no: '5', driver: 'Sebastian Vettel', car: 'Ferrari', laps: '57', time_retired: '+9.643s', pts: '15' }
+    result = F1Results::RaceResult.new hash
     assert_equal 3, result.position
     assert_equal 'Sebastian Vettel', result.driver
     assert_equal 'Ferrari', result.team
-    assert_equal '+34.523s', result.time
+    assert_equal '+9.643s', result.time
     assert_equal 15, result.points
   end
 
@@ -67,8 +70,9 @@ class ResultTest < MiniTest::Test
   end
 
   def test_race_to_a
-    result = F1Results::RaceResult.new(position: '3', driver: 'Sebastian Vettel', driver_country_abbr: 'GER', team: 'Ferrari', time: '+34.523s', points: '15')
-    assert_equal [3, 'Sebastian Vettel', 'GER', 'Ferrari', '+34.523s', 15], result.to_a
+    hash = { pos: '3', no: '5', driver: 'Sebastian Vettel', car: 'Ferrari', laps: '57', time_retired: '+9.643s', pts: '15' }
+    result = F1Results::RaceResult.new hash
+    assert_equal [3, 5, 'Sebastian Vettel', 'Ferrari', 57, '+9.643s', 15], result.to_a
   end
 
   def test_unknown_key_doesnt_raise_error

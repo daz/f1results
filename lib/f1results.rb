@@ -1,5 +1,6 @@
 require 'f1results/version'
 require 'f1results/agent'
+require 'f1results/parser'
 require 'f1results/event'
 require 'f1results/result'
 
@@ -16,12 +17,12 @@ module F1Results
 
   def self.fetch(year, country, type = :race)
     event = Event.new(year: year, country: country, type: type)
-    event.fetch_results
+    event.get_results
     return event
   end
 
   def self.fetch_with_url(url)
     agent = Agent.new
-    return agent.fetch_results_with_url(url)
+    return agent.get_results_with_url(url)
   end
 end

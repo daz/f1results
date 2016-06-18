@@ -2,103 +2,91 @@ require 'mechanize'
 
 module F1Results
   class Agent < ::Mechanize
-    attr_accessor :event
 
-    def initialize(event = nil)
-      if event.nil?
-        @event = F1Results::Event.new
-      else
-        self.event = event
-      end
-      super
-    end
-
-    def fetch_results
-      return fetch_results_with_url(@default_url)
-    end
-
-    def fetch_results_with_url(url)
-      begin
-        get(url)
-        @event.type = parse_event_type if @event.type.nil?
-        @event.country = parse_event_country if @event.country.nil?
-        @event.name = parse_event_title
-        @event.results = parse_event_results
-        return @event
-      rescue Mechanize::ResponseCodeError, Net::HTTPNotFound
-        raise "No results found at #{url}"
-      end
-    end
-
-    def event=(event)
-      path = "content/fom-website/en/championship/results/#{event.year}-race-results/#{event.year}-#{event.country_slug}-results/#{event.type_slug}.html"
-      @default_url = ::File.join F1Results::BASEURL, path
+    def get_url(event)
       @event = event
+      return url
+    end
+
+    def get_results(new_event)
+      @event = new_event
+      event.url ||= url
+      update_results
+      return event
+    end
+
+    def get_results_with_url(new_url)
+      event.url = new_url
+      update_results
+      return event
     end
 
     private
 
-      def parse_event_type
-        return page.parser.xpath('//h1[@class="headline"]').text.strip rescue nil
+      def event
+        @event ||= Event.new
       end
 
-      def parse_event_country
-        return page.parser.xpath('//a[@class="tag-link"]').text.strip.parameterize rescue nil
-      end
-
-      def parse_event_title
-        return page.parser.xpath('//a[contains(@class, "level-0")]').text rescue nil
-      end
-
-      def parse_event_results
-        results = []
-        table = page.parser.xpath('//tbody')
-
-        # Remove driver abbreviation from cell
-        table.xpath('//span[@class="tla"]').each(&:remove)
-
-        # Turn HTML table into an array of arrays
-        data = table.xpath('//tr').map do |row|
-          row.xpath('./td|./th').map do |cell|
-            cell = cell.text.gsub(/[[:space:]]+/, ' ').strip
-            cell.blank? ? nil : cell
-          end
+      def url
+        base_path = "content/fom-website/en/results.html/#{event.year}/"
+        year_url = URI.join F1Results::BASEURL, base_path, 'races.html'
+        begin
+          get(year_url)
+        rescue Mechanize::ResponseCodeError, Net::HTTPNotFound
+          raise "No results found for #{event.year}"
         end
 
-        # Remove rows that have the cell "Q1 107% Time"
-        regex = /107%/
-        data.reject! { |row| row.any? { |cell| regex =~ cell } }
+        file_name = html_file_name
+        key = meeting_key
 
-        header = parse_table_header(data.shift)
+        uri = URI.join F1Results::BASEURL, base_path, "races/#{key}/#{file_name}"
+        return uri.to_s
+      end
 
-        result_class = case
-        when @event.practice?
-          PracticeResult
-        when @event.qualifying?
-          QualifyingResult
+      def update_results
+        begin
+          get(event.url)
+          new_event = Parser.new(page).parse
+          event.results = new_event.results
+          event.type ||= new_event.type
+          event.country ||= new_event.country
+          event.name ||= new_event.name
+        rescue Mechanize::ResponseCodeError, Net::HTTPNotFound
+          raise "No results found at #{url}"
+        end
+      end
+
+      def meeting_key
+        country = event.country.parameterize
+        options = page.parser.xpath('//select[@name="meetingKey"]/option')
+        meeting_key_node = options.detect do |node|
+          node.attr('value') =~ /^\d+\/#{country}/ || node.text.parameterize =~ /#{country}/
+        end
+        raise "No country '#{event.country}' found for #{event.year}" if meeting_key_node.nil?
+        return meeting_key_node.attr('value')
+      end
+
+      def html_file_name
+        result_types = {}
+        page.parser.xpath('//a[@data-name="resultType"]').each do |node|
+          key = node.text.parameterize('_').to_sym
+          value = node.attr('data-value')
+          result_types[key] = value
+        end
+
+        # TODO: add support for Starting Grid, Warm Up, Pit Stop Summary, Fastest Laps
+        file_name = case
+        when event.race?
+          'race-result'
+        when event.qualifying?
+          result_types[:qualifying] || result_types[:overall_qualifying]
+        when event.practice?
+          event.type_name.parameterize
         else
-          RaceResult
+          raise "No results for event type '#{event.type}' at #{event.year} #{event.country}"
         end
-
-        data.each_with_index do |row, i|
-          hash = Hash[header.zip(row)]
-          hash[:index] = i
-
-          result = result_class.new(hash)
-          results << result
-        end
-
-        return results
+        return file_name + '.html'
       end
 
-      # Turn array of words to symbols
-      def parse_table_header(header)
-        header.map do |cell|
-          # Fix i18n cells that look like this
-          # {'Position' @ i18n}, {'Driver' @ i18n}, ...
-          cell = cell.match(/(')(.+)(')/)[2] if /i18n/ =~ cell
-          cell.to_s.strip.parameterize('_').to_sym
-        end
-      end
   end
 end
