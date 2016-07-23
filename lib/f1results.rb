@@ -5,7 +5,7 @@ require 'f1results/event'
 require 'f1results/result'
 
 module F1Results
-  BASEURL = 'http://www.formula1.com'
+  BASE_URL = 'http://www.formula1.com/content/fom-website/en/'
 
   # Get results from formula1.com for a given year, country, and event type
   # (race or qualifying)

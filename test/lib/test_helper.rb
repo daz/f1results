@@ -20,35 +20,33 @@ module Fixtures
     end
 
     def override_requests
-      stub 'content/fom-website/en/results.html/1950/races/96/indianapolis-500/fastest-laps.html' => '1950-indianapolis-500-fastest-laps.html'
-      stub 'content/fom-website/en/results.html/1950/races/96/indianapolis-500/qualifying-0.html' => '1950-indianapolis-500-qualifying-0.html'
-      stub 'content/fom-website/en/results.html/1950/races/96/indianapolis-500/race-result.html' => '1950-indianapolis-500-race-result.html'
-      stub 'content/fom-website/en/results.html/1950/races.html' => '1950-races.html'
+      stub 'results.html/1900/races.html'                                  => 404
 
-      stub 'content/fom-website/en/results.html/1984/brazil/466/fastest-laps.html' => '1984-brazil-fastest-laps.html'
-      stub 'content/fom-website/en/results.html/1984/brazil/466/qualifying-0.html' => '1984-brazil-qualifying-0.html'
-      stub 'content/fom-website/en/results.html/1984/brazil/466/qualifying-1.html' => '1984-brazil-qualifying-1.html'
-      stub 'content/fom-website/en/results.html/1984/brazil/466/qualifying-2.html' => '1984-brazil-qualifying-2.html'
-      stub 'content/fom-website/en/results.html/1984/brazil/466/race-result.html' => '1984-brazil-race-result.html'
-      stub 'content/fom-website/en/results.html/1984/brazil/466/starting-grid.html' => '1984-brazil-starting-grid.html'
-      stub 'content/fom-website/en/results.html/1984/brazil/466/warm-up.html' => '1984-brazil-warm-up.html'
-      stub 'content/fom-website/en/results.html/1984/races.html' => '1984-races.html'
+      stub 'results.html/1950/races/96/indianapolis-500/fastest-laps.html' => '1950-indianapolis-500-fastest-laps.html'
+      stub 'results.html/1950/races/96/indianapolis-500/qualifying-0.html' => '1950-indianapolis-500-qualifying-0.html'
+      stub 'results.html/1950/races/96/indianapolis-500/race-result.html'  => '1950-indianapolis-500-race-result.html'
+      stub 'results.html/1950/races.html'                                  => '1950-races.html'
 
-      stub 'content/fom-website/en/results.html/2016/races/938/australia/fastest-laps.html' => '2016-australia-fastest-laps.html'
-      stub 'content/fom-website/en/results.html/2016/races/938/australia/pit-stop-summary.html' => '2016-australia-pit-stop-summary.html'
-      stub 'content/fom-website/en/results.html/2016/races/938/australia/practice-1.html' => '2016-australia-practice-1.html'
-      stub 'content/fom-website/en/results.html/2016/races/938/australia/qualifying.html' => '2016-australia-qualifying.html'
-      stub 'content/fom-website/en/results.html/2016/races/938/australia/race-result.html' => '2016-australia-race-result.html'
-      stub 'content/fom-website/en/results.html/2016/races.html' => '2016-races.html'
+      stub 'results.html/1984/brazil/466/fastest-laps.html'                => '1984-brazil-fastest-laps.html'
+      stub 'results.html/1984/brazil/466/qualifying-0.html'                => '1984-brazil-qualifying-0.html'
+      stub 'results.html/1984/brazil/466/qualifying-1.html'                => '1984-brazil-qualifying-1.html'
+      stub 'results.html/1984/brazil/466/qualifying-2.html'                => '1984-brazil-qualifying-2.html'
+      stub 'results.html/1984/brazil/466/race-result.html'                 => '1984-brazil-race-result.html'
+      stub 'results.html/1984/brazil/466/starting-grid.html'               => '1984-brazil-starting-grid.html'
+      stub 'results.html/1984/brazil/466/warm-up.html'                     => '1984-brazil-warm-up.html'
+      stub 'results.html/1984/races.html'                                  => '1984-races.html'
 
-      stub 'content/fom-website/en/results.html/1900/races.html'     => 404
-      # stub ''     => 404
+      stub 'results.html/2016/races/938/australia/fastest-laps.html'       => '2016-australia-fastest-laps.html'
+      stub 'results.html/2016/races/938/australia/pit-stop-summary.html'   => '2016-australia-pit-stop-summary.html'
+      stub 'results.html/2016/races/938/australia/practice-1.html'         => '2016-australia-practice-1.html'
+      stub 'results.html/2016/races/938/australia/qualifying.html'         => '2016-australia-qualifying.html'
+      stub 'results.html/2016/races/938/australia/race-result.html'        => '2016-australia-race-result.html'
+      stub 'results.html/2016/races.html'                                  => '2016-races.html'
     end
 
     def stub(hash)
-      hash = hash.first
-      uri = File.join(F1Results::BASEURL, hash[0])
-      fixture = hash[1]
+      path, fixture = hash.to_a[0]
+      uri = File.join(F1Results::BASE_URL, path)
 
       response = case
       when fixture.is_a?(Integer)

@@ -28,8 +28,8 @@ module F1Results
       end
 
       def url
-        base_path = "content/fom-website/en/results.html/#{event.year}/"
-        year_url = URI.join F1Results::BASEURL, base_path, 'races.html'
+        base_path = "results.html/#{event.year}/"
+        year_url = URI.join F1Results::BASE_URL, base_path, 'races.html'
         begin
           get(year_url)
         rescue Mechanize::ResponseCodeError, Net::HTTPNotFound
@@ -39,7 +39,7 @@ module F1Results
         file_name = html_file_name
         key = meeting_key
 
-        uri = URI.join F1Results::BASEURL, base_path, "races/#{key}/#{file_name}"
+        uri = URI.join F1Results::BASE_URL, base_path, "races/#{key}/#{file_name}"
         return uri.to_s
       end
 
