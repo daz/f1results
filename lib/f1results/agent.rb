@@ -11,13 +11,13 @@ module F1Results
     def get_results(new_event)
       @event = new_event
       event.url ||= url
-      update_results
+      update_event
       return event
     end
 
     def get_results_with_url(new_url)
       event.url = new_url
-      update_results
+      update_event
       return event
     end
 
@@ -43,16 +43,16 @@ module F1Results
         return uri.to_s
       end
 
-      def update_results
+      def update_event
         begin
           get(event.url)
           new_event = Parser.new(page).parse
+          validate_event(new_event)
           event.results = new_event.results
-          event.type ||= new_event.type
           event.country ||= new_event.country
           event.name ||= new_event.name
         rescue Mechanize::ResponseCodeError, Net::HTTPNotFound
-          raise "No results found at #{url}"
+          raise "No results found at '#{url}'"
         end
       end
 
@@ -86,6 +86,17 @@ module F1Results
           raise "No results for event type '#{event.type}' at #{event.year} #{event.country}"
         end
         return file_name + '.html'
+      end
+
+      def validate_event(new_event)
+        if event.type.nil?
+          event_type = new_event.type
+          return
+        elsif event.type == new_event.type
+          return
+        else
+          raise "Results at '#{url}' are returning from '#{new_event.type_name}', not the requested '#{event.type_name}'"
+        end
       end
 
   end
