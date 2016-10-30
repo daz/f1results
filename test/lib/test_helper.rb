@@ -1,7 +1,8 @@
 require 'f1results'
 require 'minitest/autorun'
-require 'webmock'
 require 'minitest/assertions'
+require 'webmock'
+require 'mechanize'
 
 module Fixtures
   include WebMock::API
@@ -14,9 +15,10 @@ module Fixtures
   private
 
     def events(name)
-      @agent ||= F1Results::Agent.new
-      file = "#{name.to_s}.html"
-      @agent.get_results_with_url fixture_url(file)
+      agent = Mechanize.new
+      page = agent.get fixture_url("#{name.to_s}.html")
+      event = F1Results::Parser.new(page).parse
+      return event
     end
 
     def override_requests
