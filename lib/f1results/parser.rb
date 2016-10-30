@@ -18,7 +18,7 @@ module F1Results
 
       def event_name
         # TODO: make helper method for .gsub(/[[:space:]]+/, ' ').strip
-        return @page.parser.xpath('//title').text
+        return @page.parser.at_xpath('//h1[@class="ResultsArchiveTitle"]').text
           .gsub(/[[:space:]]+/, ' ').strip
       end
 
@@ -44,7 +44,7 @@ module F1Results
 
       def event_results
         results = []
-        table = @page.parser.xpath('//tbody')
+        table = @page.parser.at_xpath('//tbody')
 
         # Remove driver abbreviation from driver cell
         table.xpath('//span[@class="uppercase hide-for-desktop"]').each(&:remove)
