@@ -28,73 +28,79 @@ module F1Results
       end
 
       def url
-        base_path = "results.html/#{event.year}/"
-        year_url = URI.join F1Results::BASE_URL, base_path, 'races.html'
+        base_uri = URI.join F1Results::BASE_URL, "en/results.html/#{event.year}/"
+
+        year_uri = URI.join base_uri, 'races.html'
         begin
-          get(year_url)
+          get(year_uri)
         rescue Mechanize::ResponseCodeError, Net::HTTPNotFound
           raise "No results found for #{event.year}"
         end
 
-        file_name = html_file_name
-        key = meeting_key
+        race_result_uri = URI.join base_uri, "races/#{meeting_key}/race-result.html"
 
-        uri = URI.join F1Results::BASE_URL, base_path, "races/#{key}/#{file_name}"
+        return race_result_uri.to_s if event.race?
+
+        begin
+          get(race_result_uri)
+        rescue Mechanize::ResponseCodeError, Net::HTTPNotFound
+          raise "No country '#{event.country}' found for #{event.year}"
+        end
+
+        uri = URI.join base_uri, event_path
         return uri.to_s
+      end
+
+      def meeting_key
+        # Find option tag with enclosed text that matches country name
+        meeting_key_option_nodes = page.parser.xpath('//select[@name="meetingKey"]/option')
+        meeting_key_option_node = meeting_key_option_nodes.detect do |node|
+          node.text.parameterize == event.country.parameterize
+        end
+        raise "No country '#{event.country}' found for #{event.year}" if meeting_key_option_node.nil?
+
+        return meeting_key_option_node.attr('value')
+      end
+
+      def event_path
+        paths = {}
+        page.parser.xpath('//a[@data-name="resultType"]').each do |node|
+          key = node.text.parameterize('').to_sym
+          paths[key] = node.attr('href')
+        end
+
+        # TODO: add support for Starting Grid, Warm Up, Pit Stop Summary, Fastest Laps
+        path = case
+        when event.race?
+          paths[:raceresult]
+        when event.qualifying?
+          paths[:qualifying] || paths[:overallqualifying]
+        when event.practice?
+          paths[event.type]
+        else
+          raise "No results for event type '#{event.type}' at #{event.year} #{event.country}"
+        end
+        return path
       end
 
       def update_event
         begin
           get(event.url)
-          new_event = Parser.new(page).parse
-          validate_event(new_event)
-          event.results = new_event.results
-          event.country ||= new_event.country
-          event.name ||= new_event.name
         rescue Mechanize::ResponseCodeError, Net::HTTPNotFound
           raise "No results found at '#{url}'"
         end
-      end
 
-      def meeting_key
-        country = event.country.parameterize
-        options = page.parser.xpath('//select[@name="meetingKey"]/option')
-        meeting_key_node = options.detect do |node|
-          node.attr('value') =~ /^\d+\/#{country}/ || node.text.parameterize =~ /#{country}/
-        end
-        raise "No country '#{event.country}' found for #{event.year}" if meeting_key_node.nil?
-        return meeting_key_node.attr('value')
-      end
+        new_event = Parser.new(page).parse
+        event.type ||= new_event.type
+        validate_event(new_event)
 
-      def html_file_name
-        result_types = {}
-        page.parser.xpath('//a[@data-name="resultType"]').each do |node|
-          key = node.text.parameterize('_').to_sym
-          value = node.attr('data-value')
-          result_types[key] = value
-        end
-
-        # TODO: add support for Starting Grid, Warm Up, Pit Stop Summary, Fastest Laps
-        file_name = case
-        when event.race?
-          'race-result'
-        when event.qualifying?
-          result_types[:qualifying] || result_types[:overall_qualifying]
-        when event.practice?
-          event.type_name.parameterize
-        else
-          raise "No results for event type '#{event.type}' at #{event.year} #{event.country}"
-        end
-        return file_name + '.html'
+        event.country ||= new_event.country
+        event.name ||= new_event.name
+        event.results = new_event.results
       end
 
       def validate_event(new_event)
-        if event.type.nil?
-          event_type = new_event.type
-          return
-        elsif event.type == new_event.type
-          return
-        else
+        if event.type != new_event.type
           raise "Results at '#{url}' are returning from '#{new_event.type_name}', not the requested '#{event.type_name}'"
         end
       end
