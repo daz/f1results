@@ -77,9 +77,10 @@ module F1Results
           paths[:qualifying] || paths[:overallqualifying]
         when event.practice?
           paths[event.type]
-        else
-          raise "No results for event type '#{event.type}' at #{event.year} #{event.country}"
         end
+
+        raise "No results for event type '#{event.type}' at #{event.year} #{event.country}" if path.nil?
+
         return path
       end
 
