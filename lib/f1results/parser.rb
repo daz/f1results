@@ -9,6 +9,7 @@ module F1Results
       @event.name = event_name
       @event.type = event_type
       @event.country = event_country
+      @event.circuit = event_circuit
       @event.results = event_results
       # TODO: date
       return @event
@@ -37,9 +38,12 @@ module F1Results
 
       def event_country
         node = @page.parser.at_xpath('//select[@name="meetingKey"]/option[@selected]')
-        slug = node.attr('value').split('/')[-1]
-        text = node.text
-        return text
+        return node.text
+      end
+
+      def event_circuit
+        node = @page.parser.at_xpath('//span[@class="circuit-info"]')
+        return node.text
       end
 
       def event_results

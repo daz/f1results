@@ -52,10 +52,11 @@ module F1Results
       end
 
       def meeting_key
-        # Find option tag with enclosed text that matches country name
+        # Find option tag with meetingKey or enclosed text that matches country name
+
         meeting_key_option_nodes = page.parser.xpath('//select[@name="meetingKey"]/option')
         meeting_key_option_node = meeting_key_option_nodes.detect do |node|
-          node.text.parameterize == event.country.parameterize
+          node.attr('value') =~ /^\d+\/#{event.country_slug}/ || node.text.parameterize == event.country_slug
         end
         raise "No country '#{event.country}' found for #{event.year}" if meeting_key_option_node.nil?
 
@@ -96,6 +97,7 @@ module F1Results
         validate_event(new_event)
 
         event.country ||= new_event.country
+        event.circuit ||= new_event.circuit
         event.name ||= new_event.name
         event.results = new_event.results
       end

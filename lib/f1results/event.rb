@@ -2,7 +2,7 @@ require 'active_support/core_ext/string'
 
 module F1Results
   class Event
-    attr_accessor :year, :country, :country_slug, :type, :name, :results, :url
+    attr_accessor :year, :country, :circuit, :type, :name, :results, :url
 
     TYPE_ALIASES = {
       p1: :practice1,
@@ -15,6 +15,10 @@ module F1Results
     def initialize(args = {})
       @results = []
       args.each { |k,v| send("#{k}=", v) }
+    end
+
+    def country_slug
+      country.parameterize
     end
 
     def type=(type)
