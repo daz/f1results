@@ -58,5 +58,4 @@ elsif event.race?
   table.align_column 6, :right
 end
 
-puts event.results[0].inspect
 puts table
