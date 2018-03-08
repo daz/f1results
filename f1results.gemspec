@@ -17,9 +17,9 @@ Gem::Specification.new do |s|
   s.version       = F1Results::VERSION
   s.add_runtime_dependency 'mechanize', '~> 2.7'
   s.add_runtime_dependency 'terminal-table', '~> 1.4'
-  s.add_runtime_dependency 'activesupport', '~> 4'
+  s.add_runtime_dependency 'activesupport', '~> 5.1'
 
-  s.add_development_dependency 'rake', '~> 10.1'
+  s.add_development_dependency 'rake', '~> 12.3'
   s.add_development_dependency 'minitest', '~> 5.3'
-  s.add_development_dependency 'webmock', '~> 1.17'
+  s.add_development_dependency 'webmock', '~> 3.3'
 end

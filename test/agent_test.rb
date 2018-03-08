@@ -61,7 +61,7 @@ class AgentTest < MiniTest::Test
   end
 
   def test_event_with_bad_year
-    assert_raise_with_message RuntimeError, 'No results found for 1900' do
+    assert_raise_with_message RuntimeError, "No country 'Australia' found for 1900" do
       event = F1Results::Event.new(year: 1900, country: 'Australia', type: :race)
       @agent.get_url(event)
     end

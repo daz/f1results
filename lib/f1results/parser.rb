@@ -29,7 +29,7 @@ module F1Results
             .gsub(/(?<=RACE )RESULT/, '')
             .gsub(/OVERALL(?= QUALIFYING)/, '')
             .gsub(/(?<=PRACTICE)( )(?=[1|2|3])/, '')
-            .parameterize('_')
+            .parameterize(separator: '_')
           return result_title.to_sym
         else
           return nil
@@ -63,7 +63,7 @@ module F1Results
 
         # Shift top row of table and convert cell text into symbols
         header = data.shift.map do |cell|
-          cell.to_s.parameterize('_').to_sym
+          cell.to_s.parameterize(separator: '_').to_sym
         end
 
         # Set result class type

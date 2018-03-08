@@ -64,8 +64,8 @@ class ResultTest < MiniTest::Test
   def test_parse_qualifying_with_blank_values
     result = F1Results::QualifyingResult.new(position: '16', driver: 'Marcus Ericsson', team: 'Sauber', q1: '1:31.376', q2: nil, q3: nil, laps: 10)
     assert_equal '1:31.376', result.q1
-    assert_equal nil, result.q2
-    assert_equal nil, result.q3
+    assert_nil result.q2
+    assert_nil result.q3
     assert_equal 10, result.laps
   end
 
