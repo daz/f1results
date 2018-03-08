@@ -66,7 +66,7 @@ module F1Results
       def event_path
         paths = {}
         page.parser.xpath('//a[@data-name="resultType"]').each do |node|
-          key = node.text.parameterize(separator: '').to_sym
+          key = node.text.parameterize('').to_sym
           paths[key] = node.attr('href')
         end
 
