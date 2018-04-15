@@ -4,7 +4,7 @@ module F1Results
   class Agent < ::Mechanize
     def initialize
       super
-      verify_mode = OpenSSL::SSL::VERIFY_NONE
+      self.verify_mode = OpenSSL::SSL::VERIFY_NONE
     end
 
     def get_url(event)
