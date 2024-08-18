@@ -27,7 +27,9 @@ module Fixtures
     'en/results/2016/races/938/australia/practice/1'       => '2016_australia_practice_1.html',
     'en/results/2016/races/938/australia/qualifying'       => '2016_australia_qualifying.html',
     'en/results/2016/races/938/australia/race-result'      => '2016_australia_race_result.html',
-    'en/results/2016/races'                                => '2016_races.html'
+    'en/results/2016/races'                                => '2016_races.html',
+
+    'en/results/2024/races/1242/belgium/race-result'       => '2024_belgium_race_result.html',
   }
 
   def before_setup

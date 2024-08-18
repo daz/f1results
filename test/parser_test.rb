@@ -81,4 +81,17 @@ class ParserTest < Minitest::Test
     assert_equal 'Johnnie Parsons', event.winning.driver
     assert_equal 'Duke Dinsmore', event.losing.driver
   end
+
+  def test_2024_belgium_race
+    event = events(:'2024_belgium_race_result')
+    assert_equal 'FORMULA 1 ROLEX BELGIAN GRAND PRIX 2024 - RACE RESULT', event.name
+    assert_equal 'Belgium', event.country
+    assert_equal 'Circuit de Spa-Francorchamps, Spa-Francorchamps', event.circuit
+    assert event.race?
+    assert_equal 20, event.results.length
+    # Note: George Russell won but was DQ'd, but still shows as first result
+    assert_equal 'George Russell', event.winning.driver
+    assert_equal 'DQ', event.results[0].position_name
+    assert_equal 'Zhou Guanyu', event.losing.driver
+  end
 end
