@@ -1,37 +1,33 @@
 require 'test_helper'
 
-class EventTest < MiniTest::Test
+class EventTest < Minitest::Test
   include Fixtures
 
   def setup
     @event = F1Results::Event.new
   end
 
-  def test_type
-    @event.type = :qualifying
-    assert_equal 'qualifying', @event.type_slug
-    @event.type = :practice3
-    assert_equal 'practice-3', @event.type_slug
-    @event.type = :p3
-    assert_equal :practice3, @event.type
-  end
-
   def test_type_name
+    @event.type = :practice1
+    assert_equal 'Practice 1', @event.type_name
     @event.type = :practice3
     assert_equal 'Practice 3', @event.type_name
     @event.type = :qualifying
     assert_equal 'Qualifying', @event.type_name
     @event.type = :race
     assert_equal 'Race', @event.type_name
-  end
-
-  def test_type_setter_with_humanized_input
-    @event.type = 'Practice 3'
-    assert_equal :practice3, @event.type
-    @event.type = 'Qualifying'
-    assert_equal :qualifying, @event.type
-    @event.type = 'Race'
-    assert_equal :race, @event.type
+    @event.type = :starting_grid
+    assert_equal 'Starting Grid', @event.type_name
+    @event.type = :warm_up
+    assert_equal 'Warm Up', @event.type_name
+    @event.type = :pit_stop_summary
+    assert_equal 'Pit Stop Summary', @event.type_name
+    @event.type = :fastest_laps
+    assert_equal 'Fastest Laps', @event.type_name
+    @event.type = :sprint
+    assert_equal 'Sprint', @event.type_name
+    @event.type = :sprint_grid
+    assert_equal 'Sprint Grid', @event.type_name
   end
 
   def test_type_boolean_methods

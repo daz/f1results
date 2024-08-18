@@ -2,15 +2,8 @@ require 'active_support/core_ext/string'
 
 module F1Results
   class Event
+    # TODO: change country to grand_prix
     attr_accessor :year, :country, :circuit, :type, :name, :results, :url
-
-    TYPE_ALIASES = {
-      p1: :practice1,
-      p2: :practice2,
-      p3: :practice3,
-      q:  :qualifying,
-      r:  :race
-    }
 
     def initialize(args = {})
       @results = []
@@ -21,22 +14,25 @@ module F1Results
       country.parameterize
     end
 
-    def type=(type)
-      type = type.to_s.downcase.gsub(' ', '').to_sym
-      @type = TYPE_ALIASES[type] || type
-    end
-
     # Human readable type, e.g. "Practice 1", "Qualifying"
     def type_name
-      @type.to_s.gsub(/\d/, ' \0').capitalize
-    end
-
-    def type_slug
-      type_name.parameterize
+      @type.to_s.gsub(/\d/, ' \0').gsub('_', ' ').titleize
     end
 
     def practice?
       /^practice(1|2|3)$/ =~ @type.to_s
+    end
+
+    def practice1?
+      @type == :practice1
+    end
+
+    def practice2?
+      @type == :practice2
+    end
+
+    def practice3?
+      @type == :practice3
     end
 
     def qualifying?

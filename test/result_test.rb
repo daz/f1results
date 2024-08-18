@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ResultTest < MiniTest::Test
+class ResultTest < Minitest::Test
   def test_time
     result = F1Results::RaceResult.new
     result.time_or_retired = '1:25:11.288'

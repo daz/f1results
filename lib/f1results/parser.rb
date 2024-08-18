@@ -18,17 +18,15 @@ module F1Results
     private
 
       def event_name
-        # TODO: make helper method for .gsub(/[[:space:]]+/, ' ').strip
-        return @page.parser.at_xpath('//h1[@class="ResultsArchiveTitle"]').text
-          .gsub(/[[:space:]]+/, ' ').strip
+        return @page.parser.at_xpath('//h1').text.gsub(/[[:space:]]+/, ' ').strip
       end
 
       def event_type
         if match = @event.name.match(/(?:.+) - (.+)/)
           result_title = match[1]
-            .gsub(/(?<=RACE )RESULT/, '')
-            .gsub(/OVERALL(?= QUALIFYING)/, '')
-            .gsub(/(?<=PRACTICE)( )(?=[1|2|3])/, '')
+            .gsub(/(?<=RACE )RESULT/i, '')
+            .gsub(/OVERALL(?= QUALIFYING)/i, '')
+            .gsub(/(?<=PRACTICE)( )(?=[1|2|3])/i, '')
             .parameterize('_')
           return result_title.to_sym
         else
@@ -37,33 +35,32 @@ module F1Results
       end
 
       def event_country
-        node = @page.parser.at_xpath('//select[@name="meetingKey"]/option[@selected]')
+        node = @page.parser.at_xpath('//li[@data-name="races" and contains(@class, "f1-menu-item--isActive")]')
         return node.text
       end
 
       def event_circuit
-        node = @page.parser.at_xpath('//span[@class="circuit-info"]')
+        node = @page.parser.at_xpath('//h1/../following-sibling::*[1]//p[contains(@class, "text-greyDark")]')
         return node.text
       end
 
       def event_results
         results = []
-        table = @page.parser.at_xpath('//tbody')
+        tbody = @page.parser.at_xpath('//tbody')
 
         # Remove driver abbreviation from driver cell
-        table.xpath('//span[@class="uppercase hide-for-desktop"]').each(&:remove)
+        tbody.xpath('.//span[@class="tablet:hidden"]').each(&:remove)
 
-        # Turn HTML table into an array of arrays
-        data = table.xpath('//tr').map do |row|
+        # Turn HTML tbody into an array of arrays
+        data = tbody.xpath('.//tr').map do |row|
           row.xpath('./td|./th').map do |cell|
             cell = cell.text.gsub(/[[:space:]]+/, ' ').strip
             cell.blank? ? nil : cell
           end
         end
 
-        # Shift top row of table and convert cell text into symbols
-        header = data.shift.map do |cell|
-          cell.to_s.parameterize('_').to_sym
+        header = @page.parser.xpath('//thead//th').map do |cell|
+          cell.text.to_s.downcase.parameterize('_').to_sym
         end
 
         # Set result class type
