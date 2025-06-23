@@ -27,8 +27,7 @@ module F1Results
             .gsub(/(?<=RACE )RESULT/i, '')
             .gsub(/OVERALL(?= QUALIFYING)/i, '')
             .gsub(/(?<=PRACTICE)( )(?=[1-3])/i, '')
-            # only strip numbers if it's a Qualifying
-            .sub(/(?<=QUALIFYING)\s*\d+\z/i, '')
+            .sub(/(?<=QUALIFYING)\s*\d+\z/i, '') # strip numbers for Qualifying
             .strip
             .downcase
           result.to_sym
