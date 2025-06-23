@@ -4,6 +4,7 @@
 .config
 .yardoc
 .ruby-version
+mise.toml
 Gemfile.lock
 InstalledFiles
 _yardoc
