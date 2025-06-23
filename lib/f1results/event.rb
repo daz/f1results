@@ -1,22 +1,24 @@
-require 'active_support/core_ext/string'
-
 module F1Results
   class Event
-    # TODO: change country to grand_prix
-    attr_accessor :year, :country, :circuit, :type, :name, :results, :url
+    attr_accessor :year, :grand_prix, :circuit, :type, :name, :results, :url
 
     def initialize(args = {})
       @results = []
       args.each { |k,v| send("#{k}=", v) }
     end
 
-    def country_slug
-      country.parameterize
+    def grand_prix_slug
+      grand_prix.strip.downcase.gsub(/[:space:]+/, '-')
     end
 
-    # Human readable type, e.g. "Practice 1", "Qualifying"
+    # Human readable type, e.g. "Practice 1", "Qualifying", "Starting Grid"
     def type_name
-      @type.to_s.gsub(/\d/, ' \0').gsub('_', ' ').titleize
+      @type.to_s
+        .gsub(/\d/, ' \0')
+        .gsub('_', ' ')
+        .split(' ')
+        .map(&:capitalize)
+        .join(' ')
     end
 
     def practice?

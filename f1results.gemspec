@@ -15,11 +15,10 @@ Gem::Specification.new do |s|
   s.name          = 'f1results'
   s.require_paths = ['lib']
   s.version       = F1Results::VERSION
-  s.add_runtime_dependency 'mechanize', '~> 2.7'
-  s.add_runtime_dependency 'terminal-table', '~> 1.4'
-  s.add_runtime_dependency 'activesupport', '~> 4.2'
+  s.add_runtime_dependency 'mechanize', '~> 2.14'
+  s.add_runtime_dependency 'terminal-table', '~> 4.0'
 
-  s.add_development_dependency 'rake', '~> 12.3'
-  s.add_development_dependency 'minitest', '~> 5.3'
-  s.add_development_dependency 'webmock', '~> 3.3'
+  s.add_development_dependency 'rake', '~> 13.3'
+  s.add_development_dependency 'minitest', '~> 5.25'
+  s.add_development_dependency 'webmock', '~> 3.25.1'
 end

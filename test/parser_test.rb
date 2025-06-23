@@ -4,9 +4,9 @@ class ParserTest < Minitest::Test
   include Fixtures
 
   def test_2016_australia_practice1
-    event = events(:'2016_australia_practice_1')
-    assert_equal '2016 FORMULA 1 ROLEX AUSTRALIAN GRAND PRIX - Practice 1', event.name
-    assert_equal 'Australia', event.country
+    event = events(:event_2016_australia_practice_1)
+    assert_equal '2016 FORMULA 1 ROLEX AUSTRALIAN GRAND PRIX - PRACTICE 1', event.name
+    assert_equal 'Australia', event.grand_prix
     assert_equal 'Albert Park Grand Prix Circuit, Melbourne', event.circuit
     assert_equal :practice1, event.type
     assert_equal 22, event.results.length
@@ -15,9 +15,9 @@ class ParserTest < Minitest::Test
   end
 
   def test_2016_australia_qualifying
-    event = events(:'2016_australia_qualifying')
+    event = events(:event_2016_australia_qualifying)
     assert_equal '2016 FORMULA 1 ROLEX AUSTRALIAN GRAND PRIX - QUALIFYING', event.name
-    assert_equal 'Australia', event.country
+    assert_equal 'Australia', event.grand_prix
     assert_equal 'Albert Park Grand Prix Circuit, Melbourne', event.circuit
     assert_equal :qualifying, event.type
     assert_equal 22, event.results.length
@@ -27,9 +27,9 @@ class ParserTest < Minitest::Test
   end
 
   def test_2016_australia_race
-    event = events(:'2016_australia_race_result')
+    event = events(:event_2016_australia_race_result)
     assert_equal '2016 FORMULA 1 ROLEX AUSTRALIAN GRAND PRIX - RACE RESULT', event.name
-    assert_equal 'Australia', event.country
+    assert_equal 'Australia', event.grand_prix
     assert_equal 'Albert Park Grand Prix Circuit, Melbourne', event.circuit
     assert_equal :race, event.type
     assert_equal 22, event.results.length
@@ -38,9 +38,9 @@ class ParserTest < Minitest::Test
   end
 
   def test_1984_brazil_qualifying
-    event = events(:'1984_brazil_qualifying_0')
-    assert_equal 'BRAZILIAN GRAND PRIX 1984 - QUALIFYING', event.name
-    assert_equal 'Brazil', event.country
+    event = events(:event_1984_brazil_qualifying_0)
+    assert_equal 'BRAZILIAN GRAND PRIX 1984 - QUALIFYING 0', event.name
+    assert_equal 'Brazil', event.grand_prix
     assert_equal 'Autódromo Internacional do Rio de Janeiro, Brazil', event.circuit
     assert_equal :qualifying, event.type
     assert_equal 24, event.results.length
@@ -49,9 +49,9 @@ class ParserTest < Minitest::Test
   end
 
   def test_1984_brazil_race
-    event = events(:'1984_brazil_race_result')
+    event = events(:event_1984_brazil_race_result)
     assert_equal 'BRAZILIAN GRAND PRIX 1984 - RACE RESULT', event.name
-    assert_equal 'Brazil', event.country
+    assert_equal 'Brazil', event.grand_prix
     assert_equal 'Autódromo Internacional do Rio de Janeiro, Brazil', event.circuit
     assert_equal :race, event.type
     assert_equal 24, event.results.length
@@ -60,9 +60,9 @@ class ParserTest < Minitest::Test
   end
 
   def test_1950_indianapolis_500_qualifying
-    event = events(:'1950_indianapolis_500_qualifying_0')
-    assert_equal '1950 INDIANAPOLIS 500 - QUALIFYING', event.name
-    assert_equal 'Indianapolis', event.country
+    event = events(:event_1950_indianapolis_qualifying_0)
+    assert_equal '1950 INDIANAPOLIS 500 - QUALIFYING 0', event.name
+    assert_equal 'Indianapolis', event.grand_prix
     assert_equal 'Indianapolis Motor Speedway, United States', event.circuit
     assert_equal :qualifying, event.type
     assert_equal 1, event.results.length
@@ -71,9 +71,9 @@ class ParserTest < Minitest::Test
   end
 
   def test_1950_indianapolis_500_race
-    event = events(:'1950_indianapolis_500_race_result')
+    event = events(:event_1950_indianapolis_race_result)
     assert_equal '1950 INDIANAPOLIS 500 - RACE RESULT', event.name
-    assert_equal 'Indianapolis', event.country
+    assert_equal 'Indianapolis', event.grand_prix
     assert_equal 'Indianapolis Motor Speedway, United States', event.circuit
     assert_equal :race, event.type
     # Note: 3 ties, so 36 finishers, 33 positions in this race
@@ -83,9 +83,9 @@ class ParserTest < Minitest::Test
   end
 
   def test_2024_belgium_race
-    event = events(:'2024_belgium_race_result')
+    event = events(:event_2024_belgium_race_result)
     assert_equal 'FORMULA 1 ROLEX BELGIAN GRAND PRIX 2024 - RACE RESULT', event.name
-    assert_equal 'Belgium', event.country
+    assert_equal 'Belgium', event.grand_prix
     assert_equal 'Circuit de Spa-Francorchamps, Spa-Francorchamps', event.circuit
     assert event.race?
     assert_equal 20, event.results.length

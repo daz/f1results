@@ -40,9 +40,15 @@ module F1Results
           raise "No results found for #{event.year}"
         end
 
-        grand_prix_nodes = page.parser.xpath("//table[contains(@class, 'f1-table')]/tbody/tr/td[1]//a")
-        grand_prix_node = grand_prix_nodes.find { |node| node.text.downcase == event.country.downcase }
-        raise "No country '#{event.country}' found for #{event.year}" if grand_prix_node.nil?
+        grand_prix_nodes = page.parser.xpath("//table[contains(@class, 'f1-table')]//tbody/tr/td[1]/p/a").map do |a|
+          # Remove SVG icons from the links
+          a2 = a.dup
+          a2.search('.//svg').remove
+          a2
+        end
+
+        grand_prix_node = grand_prix_nodes.find { |node| node.text.strip.downcase == event.grand_prix.downcase }
+        raise "No grand prix '#{event.grand_prix}' found for #{event.year}" if grand_prix_node.nil?
 
         grand_prix_uri = URI.join base_uri, grand_prix_node.attr('href')
 
@@ -67,7 +73,12 @@ module F1Results
           "sprint qualifying" => :sprint_qualifying_node
         }
 
-        event_nodes = page.parser.xpath("//ul[contains(@class, 'f1-sidebar-wrapper')]//li/a")
+        event_nodes = page.parser.xpath("//menu[@aria-labelledby='sidebar-dropdown']//li/a").map do |a|
+          # Remove SVG icons from the links
+          a2 = a.dup
+          a2.search('.//svg').remove
+          a2
+        end
 
         # Create a hash to store the nodes
         nodes = {}
@@ -91,7 +102,7 @@ module F1Results
           raise "Unsupported event type '#{event.type}'"
         end
 
-        raise "No results for event type '#{event.type}' at #{event.year} #{event.country}" if node.nil?
+        raise "No results for event type '#{event.type}' at #{event.year} #{event.grand_prix}" if node.nil?
 
         uri = URI.join base_uri, node.attr('href')
         return uri.to_s
@@ -108,7 +119,7 @@ module F1Results
         event.type ||= new_event.type
         validate_event(new_event)
 
-        event.country ||= new_event.country
+        event.grand_prix ||= new_event.grand_prix
         event.circuit ||= new_event.circuit
         event.name ||= new_event.name
         event.results = new_event.results

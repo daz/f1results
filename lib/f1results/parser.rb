@@ -8,7 +8,7 @@ module F1Results
     def parse
       @event.name = event_name
       @event.type = event_type
-      @event.country = event_country
+      @event.grand_prix = event_grand_prix
       @event.circuit = event_circuit
       @event.results = event_results
       # TODO: date
@@ -22,25 +22,28 @@ module F1Results
       end
 
       def event_type
-        if match = @event.name.match(/(?:.+) - (.+)/)
-          result_title = match[1]
+        if m = @event.name.match(/(?:.+) - (.+)/)
+          result = m[1]
             .gsub(/(?<=RACE )RESULT/i, '')
             .gsub(/OVERALL(?= QUALIFYING)/i, '')
-            .gsub(/(?<=PRACTICE)( )(?=[1|2|3])/i, '')
-            .parameterize('_')
-          return result_title.to_sym
-        else
-          return nil
+            .gsub(/(?<=PRACTICE)( )(?=[1-3])/i, '')
+            # only strip numbers if it's a Qualifying
+            .sub(/(?<=QUALIFYING)\s*\d+\z/i, '')
+            .strip
+            .downcase
+          result.to_sym
         end
       end
 
-      def event_country
-        node = @page.parser.at_xpath('//li[@data-name="races" and contains(@class, "f1-menu-item--isActive")]')
-        return node.text
+      def event_grand_prix
+        node = @page.parser.at_xpath('(//dialog)[3]//a[.//title[text()="Active"]]')
+        node.xpath('.//svg').remove
+
+        return node.text.strip
       end
 
       def event_circuit
-        node = @page.parser.at_xpath('//h1/../following-sibling::*[1]//p[contains(@class, "text-greyDark")]')
+        node = @page.parser.at_xpath('//h1/../../../../../div/following-sibling::div[1]//p[2]')
         return node.text
       end
 
@@ -49,18 +52,23 @@ module F1Results
         tbody = @page.parser.at_xpath('//tbody')
 
         # Remove driver abbreviation from driver cell
-        tbody.xpath('.//span[@class="tablet:hidden"]').each(&:remove)
+        tbody.xpath('.//span[@class="md:hidden"]').each(&:remove)
 
         # Turn HTML tbody into an array of arrays
         data = tbody.xpath('.//tr').map do |row|
           row.xpath('./td|./th').map do |cell|
             cell = cell.text.gsub(/[[:space:]]+/, ' ').strip
-            cell.blank? ? nil : cell
+            cell.empty? ? nil : cell
           end
         end
 
         header = @page.parser.xpath('//thead//th').map do |cell|
-          cell.text.to_s.downcase.parameterize('_').to_sym
+          cell.text.to_s
+            .gsub(/\./, '') # Pos. -> Pos
+            .gsub(/[[:space:]]+/, '')
+            .gsub(/\/.*/, '') # Time/Retired -> Time
+            .downcase
+            .to_sym
         end
 
         # Set result class type

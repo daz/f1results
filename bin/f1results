@@ -3,24 +3,24 @@
 require 'rubygems'
 require 'optparse'
 require 'terminal-table'
-require File.expand_path('../../lib/f1results.rb', __FILE__)
+require_relative '../lib/f1results'
 
 year       = Time.now.year
-country    = ''
+grand_prix = ''
 event_type = :race
 url        = nil
 
 optparse = OptionParser.new do |opts|
-  opts.on('-y', '--year=YEAR', Integer)      { |val| year = val }
-  opts.on('-c', '--country=COUNTRY', String) { |val| country = val.titleize }
-  opts.on('-e', '--event=EVENT', String)     { |val| event_type = val.downcase.to_sym }
-  opts.on('-u', '--url=URL', String)         { |val| url = val }
+  opts.on('-y', '--year=YEAR', Integer)          { |val| year = val }
+  opts.on('-g', '--grandprix=GRANDPRIX', String) { |val| grand_prix = val.capitalize }
+  opts.on('-e', '--event=EVENT', String)         { |val| event_type = val.downcase.to_sym }
+  opts.on('-u', '--url=URL', String)             { |val| url = val }
   opts.parse!
 end
 
 begin
   event = if url.nil?
-    F1Results.fetch(year, country, event_type)
+    F1Results.fetch(year, grand_prix, event_type)
   else
     F1Results.fetch_with_url(url)
   end
@@ -29,7 +29,7 @@ rescue RuntimeError => e
   exit
 end
 
-title = url.nil? ? "#{event.year} #{event.country} #{event.type_name}\n#{event.name}" : event.name
+title = url.nil? ? "#{event.year} #{event.grand_prix} #{event.type_name}\n#{event.name}" : event.name
 table = Terminal::Table.new title: title, rows: event.to_a
 
 if event.practice?
