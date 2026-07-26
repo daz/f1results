@@ -40,7 +40,7 @@ module F1Results
           raise "No results found for #{event.year}"
         end
 
-        grand_prix_nodes = page.parser.xpath("//table[contains(@class, 'f1-table')]//tbody/tr/td[1]/p/a").map do |a|
+        grand_prix_nodes = page.parser.xpath("//table//tbody/tr/td[1]//a[contains(@href, '/races/')]").map do |a|
           # Remove SVG icons from the links
           a2 = a.dup
           a2.search('.//svg').remove
