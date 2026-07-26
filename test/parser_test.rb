@@ -39,7 +39,7 @@ class ParserTest < Minitest::Test
 
   def test_1984_brazil_qualifying
     event = events(:event_1984_brazil_qualifying_0)
-    assert_equal 'BRAZILIAN GRAND PRIX 1984 - QUALIFYING 0', event.name
+    assert_equal 'BRAZILIAN GRAND PRIX 1984 - OVERALL QUALIFYING', event.name
     assert_equal 'Brazil', event.grand_prix
     assert_equal 'Autódromo Internacional do Rio de Janeiro, Brazil', event.circuit
     assert_equal :qualifying, event.type
@@ -61,7 +61,7 @@ class ParserTest < Minitest::Test
 
   def test_1950_indianapolis_500_qualifying
     event = events(:event_1950_indianapolis_qualifying_0)
-    assert_equal '1950 INDIANAPOLIS 500 - QUALIFYING 0', event.name
+    assert_equal '1950 INDIANAPOLIS 500 - QUALIFYING', event.name
     assert_equal 'Indianapolis', event.grand_prix
     assert_equal 'Indianapolis Motor Speedway, United States', event.circuit
     assert_equal :qualifying, event.type
