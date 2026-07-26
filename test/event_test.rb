@@ -1,8 +1,6 @@
 require 'test_helper'
 
 class EventTest < Minitest::Test
-  include Fixtures
-
   def setup
     @event = F1Results::Event.new
   end

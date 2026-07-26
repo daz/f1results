@@ -4,6 +4,8 @@ require 'minitest/assertions'
 require 'mechanize'
 require 'fixtures'
 
+WebMock.disable_net_connect!
+
 module Minitest::Assertions
   def assert_nothing_raised(*)
     yield

@@ -78,15 +78,14 @@ module Fixtures
     },
   }
 
-  def before_setup
-    super
-    STUBS.each_key { |name| stub(name) }
-  end
-
   private
 
     def fixture_path(file)
       File.join(FIXTURES_DIR, file)
+    end
+
+    def stub_all
+      STUBS.each_key { |name| stub(name) }
     end
 
     def events(name)
@@ -108,9 +107,13 @@ module Fixtures
       when fixture.is_a?(Integer)
         { status: fixture }
       when fixture.is_a?(String)
-        { status:  200,
-          headers: { 'Content-Type' => 'text/html' },
-          body:    File.read(fixture_path(fixture)) }
+        lambda do
+          {
+            status: 200,
+            headers: { 'Content-Type' => 'text/html' },
+            body: File.binread(fixture_path(fixture))
+          }
+        end
       end
 
       stub_request(:get, remote_uri.to_s).to_return(response)

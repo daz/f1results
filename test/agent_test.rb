@@ -4,6 +4,7 @@ class AgentTest < Minitest::Test
   include Fixtures
 
   def setup
+    stub_all
     @agent = F1Results::Agent.new
   end
 
